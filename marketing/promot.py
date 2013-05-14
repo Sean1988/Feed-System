@@ -76,8 +76,7 @@ def sendPromotEmail():
             body = body1+ "<p>Signl helps companies like yours measure growth and the competitive landscape around you. You can view your ranking here:</p></br>"+url+"</br><p>Let me know if you have any questions.</p>"
             body = body + "<p>Best,<br>Nick, Founder</p><p><a href='http://www.signl.com'>Signl.com</a><br>Address: 20 Jay St. New York City<br>Email: nick@signl.com<br>Phone: 862.205.4769</p><br>"+footer+"</html>"
             try:
-                send_simple_message(sender,"wenzhixue@gmail.com",subject,body,'marketing',MARKETING_CAMP)
-                return
+                send_simple_message(sender,item.email,subject,body,'marketing',MARKETING_CAMP)
             except:
                 print "send email error %s " % item.email
                 continue

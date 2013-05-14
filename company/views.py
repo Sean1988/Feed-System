@@ -57,6 +57,10 @@ def slugall():
 
 @login_required
 def industry(request,slug):
+    comp = request.GET.get('comp')
+    if comp !=None:
+        return HttpResponseRedirect("/accounts/register/?comp=%s"% comp)
+
     if request.method == 'GET':
         user = request.user
         if slug == "all":
