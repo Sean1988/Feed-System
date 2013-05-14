@@ -81,7 +81,7 @@ def email(subject_template, message_template, recipient_list, object, action=Non
 def email_visitor(object, action):
     """Email a visitor."""
     subject = "New message from %s" %(object.sender.first_name)
-    url = "http://www.blastoff.co/message/inbox/"
+    url = "http://www.signl.com/message/inbox/"
     ctx_dict = { 'object': object, 'action': action,'url':url}
     text_content = ""
     html_content = render_to_string('postman/email_corp.html', ctx_dict)

@@ -1,5 +1,7 @@
 *.py[cod]
 
+.DS_Store
+
 # C extensions
 *.so
 
@@ -33,3 +35,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+#setting files
+local_settings.py
