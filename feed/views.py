@@ -183,7 +183,7 @@ def feedTestPage(request):
         dataFeed = DataFeed.objects.all().order_by('-percent')[0:50]
     else:  
         dataFeed = DataFeed.objects.all().order_by('-percent')[start:end]
-    return render(request, 'feedTest.html', locals())
+    return render(request, 'feedtest.html', locals())
 
 
 
