@@ -1,0 +1,654 @@
+{% extends "base.html" %} 
+{% block css %}
+<style>
+body {
+  background: url("http://newsle.com/static/crosshatchbg2.png") repeat-x fixed 0 0 #E0E1E3;
+  padding-top: 120px; /* Only include this for the fixed top bar */
+}
+
+.heading {
+    border-bottom: 1px solid #DCDCDC;
+    margin-bottom: 18px;
+    padding-bottom: 5px;
+}
+
+.feed_headline{
+  font-size: 20.5px
+}
+.row-fluid div[class*="span"] {
+    min-height: 1px;
+}
+
+.search_page .search_item {
+    border-bottom: 1px solid #E0E0E0;
+    padding: 10px 20px 10px 30px;
+    position: relative;
+}
+.search_page .search_content {
+    padding-left: 110px;
+}
+.sepV_a {
+    margin-right: 5px;
+}
+a, button, input {
+    outline: medium none !important;
+}
+.sepH_a {
+    margin-bottom: 5px;
+}
+
+.sepH_b {
+    margin-bottom: 10px;
+}
+
+.tracking-head{
+  background-color: #eee;
+  text-align:center;
+  height: 40px;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+
+}
+.feed-company-icon
+{
+
+height: 90px;
+width: 90px;
+border: none;
+
+}
+</style>
+{% endblock %}  
+
+{% block content %} 
+
+{% load feed_tip %}
+<div class="container" style="max-width: 1000px;margin: 0 auto;padding-top: 0px;">
+  <div class="row-fluid">  
+    <div class="span8" style="width: 650px;">
+
+      <div style="background-color: #f3f3f3;border-radius: 10px;">
+        <ul id="feedTab" class="nav nav-pills" style="margin: 0 auto; width: 430px;">
+          <li class="active" style="padding-left: 15px; padding-right: 15px;">
+            <a><h4>All Stories</h4></a>
+          </li>
+          <li style="padding-left: 15px; padding-right: 15px;"><a ><h4>Only News</h4></a></li>
+          <li style="padding-left: 15px; padding-right: 15px;"><a ><h4>Only Data</h4></a></li>
+        </ul>
+      </div>
+       
+      {% if not hasTracker %}
+      {% endif %}   
+
+      {% if hasIndustry %}
+        <div class="row-fluid topfeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
+          <div class="span2" style="margin-left: 10px;">
+            <a href="#" style="border:0px"><img src="http://www.signl.com/static/img/def_comp_icon.jpg" class="img-rounded feed-company-icon"></a>
+          </div>
+          <div class="span9" > 
+          <h4 class="feed_headline"><a href="/industry/{{user.tag.all.0.slug}}">Check out the {{user.tag.all.0.tagName}} industry's updated momentum rankings!</a></h4>
+          <p>Your industry's momentum rankings have been updated. {% for item in competitor%}<a href="/company/{{item.slug}}">{{item.name}}</a>'s momentum score is now {{item.smooth|floatformat:"0"}}%.{% endfor %} See your updated competitive landscape ranked by momentum.</p>
+          </div>
+        
+        </div>
+      {% elif not user.industry %}  
+          <div id="feedAddIndustryArea" class="row-fluid topfeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
+          
+          <div class="span12" style="padding-left: 25px;text-align: center; padding-bottom: 15px; border-right-width: 0px; padding-right: 25px;"> 
+          <h4 class="feed_headline">Check out your industry's updated momentum rankings!</h4>
+
+          <p>Once you've entered your company and industry, go to your Rankings Page to see your company and your competition ranked by momenutm. </p>
+          <a href="#feedAddIndustry" role="button" data-toggle="modal" class="btn btn-success">See your Industry Momentum Rank</a>
+          </div>
+        
+        </div>
+      {% endif %}
+
+      {% if user.comp %}
+          <div class="row-fluid topfeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
+
+          <div class="span2" style="margin-left: 10px;">
+            <a href="#" style="border:0px"><img src="http://www.signl.com/static/img/def_comp_icon.jpg" class="img-rounded feed-company-icon"></a>
+          </div>
+
+          <div class="span9" style="padding-bottom: 15px; border-right-width: 0px; padding-right: 25px;"> 
+          <h4 class="feed_headline"><a href="/industry/{{user.tag.all.0.slug}}">Check out your company {{user.comp.name}}'s ranking in {{user.tag.all.0.tagName}}</a></h4>
+          <p>Company <a href="/company/{{user.comp.slug}}">{{user.comp.name}}</a>'s momentum score is <a>{{user.comp.smooth|floatformat:"0"}}%</a></p>
+          </div>
+        </div>
+      {% endif %}
+       
+      {% if not user.company_name %}
+          <div id="feedAddCompanyArea" class="row-fluid topfeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
+         
+          <div class="span12" style="padding-left: 25px; text-align: center; padding-bottom: 15px; border-right-width: 0px; padding-right: 25px;"> 
+          <h4 class="feed_headline">Check out your company's updated momentum score!</h4>
+
+          <p>Once you've entered your company and industry, you'll know how your company's momentum is rated. Enter your company and industry to see your company's rank </p>
+          <a  href="#feedAddCompany" role="button" data-toggle="modal" class="btn btn-success">See your Company Momentum Score</a>
+          </div>
+        
+        </div>
+      {% endif %}
+
+      {% for item in feed_list%}
+      {% if item.type  %}
+        <div class="row-fluid dataFeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
+        <div class="span2" style="margin-left: 10px;">
+          <a href="#" style="border:0px">
+        <img src="{{item.company.thumb}}" class="img-rounded feed-company-icon">
+        </a>
+        <h5 style="text-align:center;margin-top:5px;">{{item.company.name}}</h5>
+        </div>
+        <div class="span7">
+          <h4 class="feed_headline"><a href="/company/{{item.company.slug}}">{{item.company.name}}</a>'s {{item |dataFeed_title}}</h4>
+          {% if item.company not in user.tracker.all %}
+          <p><a name="{{item.company.slug}}" class="trackLink">Track {{item.company.name}}</a></p>
+          {% endif %}
+        </div>
+        <div style="margin-left:0px;"class="span3"><img src="/static/img/datafeed/{{item.company.id}}_{{item.type}}_{{item.period}}.png">
+        </a>
+        </div>
+        </div >
+
+      {%elif item.title %}
+        <div class="row-fluid newsFeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
+        <div class="span2" style="margin-left: 10px;">
+          <a href="/company/{{item.company.slug}}" style="border:0px">
+        <img src="{{item.company.thumb}}" class="img-rounded feed-company-icon">
+        </a>
+        <h5 style="text-align:center;margin-top:5px;">{{item.company.name}}</h5>
+        </div>
+        <div class="span9">
+        <h4 class="feed_headline" style="margin-top: 0px;margin-bottom: 4px;">
+            <a href="{{item.link}}" >{{item.title}}</a>
+        </h4>
+        <span style="color:gray;"class="sepH_a">
+        <small>{{item.domain}}</small>
+        <small style="margin-left:15px;">
+        {{item.pub_date}}
+        </small>
+        </span> 
+
+        <br>
+        <p class="sepH_b item_description">{{item.description}} <a href="{{item.link}}"> More»</a></p>
+        {% if item.company not in user.tracker.all %}
+          <p><a name="{{item.company.slug}}" class="trackLink">Track {{item.company.name}}</a></p>
+        {% endif %}
+        </div>
+        </div >
+
+      {% endif %}
+
+      {% endfor %}
+    </div>
+
+    <div class="span4"><!--right side bar-->
+      <div style="background:white;border-radius: 10px;margin-top: -10px;">
+        <div class="tracking-head"><h4 style="padding-top: 10px;" >Welcome {{request.user.first_name}}</h4></div>
+        <div class="row-fluid" style="padding: 10px;">
+          <div class="span3" style="margin-top: 10px;">  
+            {% if request.user.linkedinId %}
+             <img style="width: 60px; height: 60px;" src="{{ user.icon }}"></img>
+            {% else %}
+             <img style="width: 60px; height: 60px;" src="{{ STATIC_URL }}img/profileIcon.jpg"></img>
+            {% endif %}
+          </div>  
+          <div class="span6">  
+            <h5 ><input style="display:none;max-width: 150px;" class="companySearch" id="companySearchBox" type="text" placeholder="Type your company">
+
+              <div id="compNameTitleArea" {% if not request.user.company_name or request.user.company_name == "" %}class='hide'{%endif%}>
+                <span id='compNameTitle'>{{request.user.company_name}}</span>
+                <a id="nameChange" style="margin-left:10px;"><i class="icon-edit"></i></a>
+              </div>
+                 {% if not request.user.company_name or request.user.company_name == "" %}
+                 <a id="addCompBtn">Add your company</a>
+                {%endif%}
+
+            </h5>
+
+            <h5><input style="display:none;max-width: 150px;" class="industrySearch" id="industrySearchBox" type="text" placeholder="Type your industry">
+
+              <div id="indNameTitleArea" {% if not request.user.industry %}class='hide'{%endif%}>
+                <span id='indNameTitle' >{{request.user.industry}}</span>
+                <a id="indChange" style="margin-left:10px;"><i class="icon-edit"></i></a>
+              </div>
+
+              {% if not request.user.industry %}
+              <a id="addIndBtn"  >Add your Industry</a>
+              {%endif%}
+            </h5>
+
+          </div>
+
+        </div>
+      </div>
+      <div style="background:white;border-radius: 10px;"><!--recommended company block-->
+        <div class="tracking-head"><h4 style="padding-top: 10px;" >Suggested companies to track</h4></div>
+
+          {% for comp in recommend_tracker|slice:":8" %}
+          <div class="row-fluid"style="margin:10px 15px 5px 15px" >
+              <div class="span3">
+              <a target="_blank"  href="/company/{{comp.slug}}">
+              <img class="thumbnail"  style="width: 60px; height: 60px;" src="{{comp.thumb}}" style="width=90px;height=90px">
+              </a>
+              </div>
+              <div class="span5" style="margin-left: 20px;">
+              <h4 style="overflow:hidden;"><a target="_blank" href="/company/{{comp.slug}}">{{comp.name}}</a></h4>
+              <h5>Momentum {% if comp.smooth > 0 %}<span style="color:green;">+{%else%}<span style="color:red;">{%endif%}{{comp.smooth|floatformat:"0" }}%</span>
+              </h5>
+              </div>
+              <div class="span3" style="margin-top: 26px;"><button name="{{comp.slug}}" class="btn btn-info trackBtn" type="button">Track</button></div>
+          </div>
+         {% endfor %}
+         <br>
+      </div><!--tracking company block-->
+      <div style="background:white;border-radius: 10px;"><!--tracking company block-->
+        <div class="tracking-head"><h4 style="padding-top: 10px;" >Tracked Companies</h4></div>
+        <ul class="thumbnails">
+          {% for comp in tracker|slice:":8" %}
+          <li class="span2" style="margin:15px 15px 5px 15px" >
+              <a target="_blank"  href="/company/{{comp.slug}}">
+              <img class="thumbnail" src="{{comp.thumb}}" style="width=90px;height=90px">
+              </a>
+              <p style="width:90px;overflow:hidden;height: 24px;">{{comp.name|truncatechars:10}}</p>
+          </li>
+         {% endfor %}
+         <p class="pull-right"><a href="/accounts/tracker/" style="padding-right: 10px;" >View All »</a></p>
+        </ul>
+      </div><!--tracking company block-->
+
+
+
+
+
+    </div><!--right side bar-->
+
+  </div>
+</div>
+
+
+<div id="feedAddCompany" class="modal hide fade" style="width: 400px;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Enter your Company</h3>
+  </div>
+  <div class="modal-body">
+    <input id="modalCompanySearch" class="companySearch" type="text" placeholder="Type your company">
+  </div>
+  <div class="modal-footer">
+    <a class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+    <a id="modalSaveCompany" class="btn btn-primary">Save changes</a>
+  </div>
+</div>
+
+<div id="feedAddIndustry" class="modal hide fade" style="width: 400px;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Enter your Industry</h3>
+  </div>
+  <div class="modal-body">
+    <input id="modalIndustrySearch" class="industrySearch" type="text" placeholder="Type your company">
+  </div>
+  <div class="modal-footer">
+    <a class="btn" data-dismiss="modal" aria-hidden="true" >Close</a>
+    <a id="modalSaveIndustry" class="btn btn-primary">Save changes</a>
+  </div>
+</div>
+
+{% include "rmd.html" %}
+{% endblock %}  
+
+{% block javascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autocomplete.js"></script>
+<script>
+    $(document).ready(function() {
+      mixpanel.track("feed page");
+          {% if recommend or not hasTracker %}
+            $('#selectInterestBox').modal('show');
+          {% endif %}
+
+    });
+
+    function ajax_change_company(){
+        var slug = $('#companySearchBox').data('slug');
+        var name = $('#companySearchBox').val();
+
+        $('#nameChange').show();
+        $('#compNameTitle').html(name);
+        $('#compNameTitle').show();
+        $('#compNameTitleArea').show();
+        $('#companySearchBox').hide();
+        $('#feedAddCompanyArea').hide();
+
+        $.post('/accounts/ajax/changeCompany/',
+        {'slug': slug,
+         'name': name,
+         'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Changed company successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+
+    }
+
+    function ajax_change_industry(){
+        var name = $('#industrySearchBox').data('tagname');
+        $('#indChange').show();
+        $('#indNameTitle').html(name);
+        $('#indNameTitle').show();
+        $('#indNameTitleArea').show();
+        $('#industrySearchBox').hide();
+        $('#feedAddIndustryArea').hide();
+
+        $.post('/accounts/ajax/changeIndustry/',
+        {'name': name,
+         'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Changed industry successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+
+    }
+
+    $('#modalSaveCompany').click(function(e){ 
+      var slug = $('#modalCompanySearch').data('slug');
+      if(slug == "" || slug == undefined)
+      {
+        var name = $('#modalCompanySearch').val();
+      }
+      $.post('/accounts/ajax/changeCompany/',
+        {
+          'slug': slug,
+          'name': name,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Changed company successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+                $('#feedAddCompany').modal('hide');
+                window.location.reload();
+
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+    });       
+
+    $('#modalSaveIndustry').click(function(e){ 
+      var tagName = $('#modalIndustrySearch').data('tagname');
+      if(tagName == "" || tagName == undefined) return;
+      $.post('/accounts/ajax/changeIndustry/',
+        {'name': tagName,
+         'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Changed industry successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+                $('#feedAddIndustry').modal('hide');
+                window.location.reload();
+
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+    });  
+
+    $('#modalSaveIndustry').click(function(e){ 
+
+
+    });
+
+    $('#nameChange').click(function(e){ 
+      $(this).hide();
+      $('#compNameTitle').hide();
+      $('#companySearchBox').show();
+    });
+    
+    $('#indChange').click(function(e){ 
+      $(this).hide();
+      $('#indNameTitle').hide();
+      $('#industrySearchBox').show();
+    });
+
+    
+    $('#companySearchBox').keypress(function(e) {
+       if(e.which == 13) {
+          ajax_change_company();
+        }
+    });
+
+
+
+    $('.companySearch').autocomplete({
+        serviceUrl: 'http://www.signl.com/compAuto/',
+        minChars: 2,
+        onSelect: function (suggestion) {
+            $('.companySearch').data('slug',suggestion.data);
+            ajax_change_company();
+        }
+    });
+
+    $('#industrySearchBox').keypress(function(e) {
+       if(e.which == 13) {
+          ajax_change_industry();
+        }
+    });
+
+
+    $('.industrySearch').autocomplete({
+        serviceUrl: 'http://www.signl.com/tagAuto/',
+        minChars: 2,
+        onSelect: function (suggestion) {
+            $('.industrySearch').data('tagname',suggestion.value);
+            ajax_change_industry();
+        }
+    });
+
+
+    $('#addCompBtn').click(function(e){
+      $(this).hide();
+      $('#companySearchBox').show();
+    });
+
+    $('#addIndBtn').click(function(e){
+      $(this).hide();
+      $('#industrySearchBox').show();
+    });
+
+
+    $('#feedTab a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+
+      if($(this).text() == "Only News")
+      {
+        $(".dataFeed").hide();
+        $(".newsFeed").show();
+      }
+      else if ($(this).text() == "Only Data")
+      {
+        $(".dataFeed").show();
+        $(".newsFeed").hide();
+      }
+      else{
+        $(".dataFeed").show();
+        $(".newsFeed").show();
+      }
+    })
+
+
+   $('.trackBtn').click(function(e){
+      var slug = $(this).attr('name');
+      var self= this;
+      $.post('/accounts/track/',
+        {'slug':slug,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Track company successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+                $(self).addClass('disabled');
+                $(self).attr("disabled", "disabled");
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+    }); 
+
+   $('.trackLink').click(function(e){
+      var slug = $(this).attr('name');
+      var self= this;
+      $.post('/accounts/track/',
+        {'slug':slug,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Track company successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+                $('a[name='+slug+']').hide();
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+    }); 
+
+        /*recommend popup*/
+        $('#rmdSkip').click(function(e){ 
+          mixpanel.track("recommend skip");
+        });
+
+        function updateInterests(){
+        mixpanel.track("feed recommend continue");
+        var boxes = $('input:checkbox:checked');
+        //set those box whose not checked to -1
+        if(boxes.length == 0)
+        {
+          $('#selectInterestBox').modal('hide');
+          return;
+        }
+      
+        var wantTrack = []; 
+        $(boxes).each(function(){
+          wantTrack.push($(this).val());
+         }); 
+
+        $("#rmdContinue").prop({disabled: true});
+        $('.modal-body').mask({spinner: { lines: 10, length: 5, width: 3, radius: 10,shadow: true},
+                overlaySize: 100,
+                label: "loading"
+        });
+
+        $.post('/accounts/recommendTrack/',
+          {'wantTrack' : wantTrack.join(","),
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+          }, function(data){
+              response = jQuery.parseJSON(data);
+              if(response.success)
+                {
+                  $.pnotify({
+                        title: 'Notice',
+                        text: 'Tracked company successful.',
+                        delay: 2000,
+                        hide: true
+                    });
+                  window.location = "/feed/";
+              }
+              else
+              {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+                $('.modal-body').unmask();
+                $("#rmdContinue").prop({disabled: false});
+              }
+          });
+      }
+
+</script>
+{% endblock %}
+

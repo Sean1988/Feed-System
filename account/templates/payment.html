@@ -1,0 +1,267 @@
+{% extends "base.html" %} 
+{% block css %}
+    <!-- Pricing table -->
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/tsc_pricingtables.css" />
+    <link href="{{ STATIC_URL }}css/jquery.loadmask.spin.css" rel="stylesheet" type="text/css" />
+    <!-- Pricing table responsive -->
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+
+      .benefit{
+        position: relative;
+        padding-left:300px; 
+        padding-top:0px;
+      }
+
+      .benefit li{
+        font-size: 20px;
+        margin-top: 12px;
+      }
+
+      #headline{
+        padding-left:110px;
+        color:#0088cc
+      }
+    </style>
+{% endblock %}  
+
+{% block content %}  
+    <div id="mainContainer" class="container">
+      <div class="page-header" style="margin-bottom: 10px;">
+        <h4 style="padding-left:115px">Upgrade to Signl {% if tier == 0 %}Pro{% elif tier == 1 %}Platinum{% endif %}:</h4>
+        <h2 id="headline">You're one step away from being one step ahead.</h2>
+      </div>
+      <div>
+          <ul class="benefit">
+            <li>Monitor companies that matter</li>
+            <li>Discover companies you didn't know mattered</li>
+            <li>Use Signl's messaging tool to contact any company</li>
+            <li>See who's tracking your company, and more</li>
+            {% if tier == 0 %}
+              <button class="signup btn btn-success btn-plan-select" style="position:relative;left:160px;top:30px;padding:12px 20px 12px 20px;font-size:18px;" value="Pro">Subscribe Now</button>
+            {% elif tier == 1 %}
+              <button class="signup btn btn-success btn-plan-select" style="position:relative;left:160px;top:30px;padding:12px 20px 12px 20px;font-size:18px;" value="Platinum">Subscribe Now</button>
+            {% endif %}
+              <br>
+              <a style="text-align:right;position:absolute;left:900px;" href="{{jump}}">
+                {% if tier != 2 %}
+                Subscribe Later >>>
+                {% else %}
+                Back To Home >>>
+                {% endif %}
+              </a>
+              <p style="position:relative;top:60px;color:grey;font-size:10px;"> By subscribing, you agree to our <a href="/terms/">Terms of Service</a> and <a href="/privatePolicy/">Privacy Policy</a>. You can unsubscribe any time.</p>
+
+          </ul>
+          <br><br><br>
+      </div>
+
+        <center>
+        <!-- DC Pricing Tables:3 Start -->
+          <div class="tsc_pricingtable03 tsc_pt3_style1" style="width: 970px">
+            <div class="caption_column">
+              <ul>
+                <li class="header_row_1 align_center radius5_topleft"></li>
+                <li class="header_row_2">
+                  <h2 class="caption">Choose Plan</h2>
+                </li>
+                <li class="row_style_3"><span>Momentum Alerts</span></li>
+                <li class="row_style_1"><span>Company Profiles</span></li>
+                <li class="row_style_3"><span>Industry Access</span></li>
+                <li class="row_style_1"><span>Filtered Rankings</span></li>
+                <li class="row_style_3"><span>Customer Service</span></li>
+                <li class="row_style_1"><span>Contact Companies</span></li>
+                <li class="row_style_3"><span>Tracking List</span></li>
+                <li class="row_style_1"><span>Who's Tracking You</span></li>
+                <li class="footer_row"></li>
+              </ul>
+            </div>
+            <div class="column_1">
+              <ul>
+                <li class="header_row_1 align_center">
+                  <h2 class="col1">Free Spin</h2>
+                </li>
+                <li class="header_row_2 align_center">
+                  <h1 class="col1">$<span>0</span></h1>
+                  <h3 class="col1">per month</h3>
+                </li>
+                <li class="row_style_4 align_center">Limited</li>
+                <li class="row_style_2 align_center">Limited</li>
+                <li class="row_style_4 align_center"><span><a class="tooltip2" rel="Only can use basic filter">Limited</a></span></li>
+                <li class="row_style_2 align_center"><span class="pricing_no"></span></li>
+                <li class="row_style_4 align_center">Email Only</li>
+                <li class="row_style_2 align_center"><span class="pricing_no"></span></li>
+                <li class="row_style_4 align_center">Sample</li>
+                
+                <li class="row_style_2 align_center">Not Visible</li>
+                
+                <li class="footer_row">{% if tier == 0 %}<h3>Selected</h3>{% endif %}</li>
+              </ul>
+            </div>
+            <div class="column_2">
+              <ul>
+                <li class="header_row_1 align_center">
+                  <h2 class="col2">Pro Plan</h2>
+                </li>
+                <li class="header_row_2 align_center">
+                  <h1 class="col2">$<span>29</span></h1>
+                  <h3 class="col2">per month</h3>
+                </li>
+                <li class="row_style_3 align_center">Customizable</li>
+                <li class="row_style_1 align_center">In Your Industry</li>
+                <li class="row_style_3 align_center">Entire Industry</li>
+                <li class="row_style_1 align_center">Industry-wide</li>
+                <li class="row_style_3 align_center">Expedited</li>
+                <li class="row_style_1 align_center">Industry-wide</li>
+                <li class="row_style_3 align_center">Customizable</li>
+                <li class="row_style_1 align_center">Visible</li>
+                <li class="footer_row">{% if tier == 0 %}<a class="signup btn btn-success" value="Pro" style="padding:6px 16px 8px 16px;font-size:14px;color:white;">Sign up</a>{% elif tier == 1 %}<h3>Selected</h3>{% endif %}</li>
+              </ul>
+            </div>
+            <div class="column_3">
+              <ul>
+                <li class="header_row_1 align_center">
+                  <h2 class="col3">Platinum Plan</h2>
+                </li>
+                <li class="header_row_2 align_center">
+                  <h1 class="col3">$<span>299</span></h1>
+                  <h3 class="col3">per month</h3>
+                </li>
+
+                <li class="row_style_4 align_center">Customizable</li>
+                <li class="row_style_2 align_center">All Industries</li>
+                <li class="row_style_4 align_center">All Industries</li>
+                <li class="row_style_2 align_center">All Industries</li>
+                <li class="row_style_4 align_center">Expedited</li>
+                <li class="row_style_2 align_center">All Companies</li>
+                <li class="row_style_4 align_center">Customizable</li>
+                <li class="row_style_2 align_center">Visible</li>
+                <li class="footer_row">{% if tier == 3 %}<h3>Selected</h3>{% else %}<a class="signup btn btn-success" value="Platinum" style="padding:6px 16px 8px 16px;font-size:14px;color:white;">Sign up</a>{% endif %}</li>
+              </ul>
+            </div>
+          </div>
+        <!-- DC Pricing Tables:3 End -->
+        <div class="tsc_clear"></div> <!-- line break/clear line -->
+      </center>
+    </div> <!-- /container -->
+{% endblock %}
+
+{% block javascript %}
+  <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+  <script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
+  <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.loadmask.spin.js'></script>
+  <script>
+  
+    $(document).ready(function() {
+      mixpanel.track("payment page");
+    }); 
+
+      $('.signup').click(function(){
+        var level = $(this).attr("value");
+        if (level == "Pro"){
+          mixpanel.track("pay pro");
+          var token = function(res){
+ 
+           $("#mainContainer").mask({spinner: { lines: 10, length: 5, width: 3, radius: 10,shadow: true},
+            overlaySize: 100,
+            label: "loading"
+           });
+
+          $.post('/accounts/doPayment/',
+          {
+            'plan':"Pro",
+            'stripeToken':res.id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          function(data){
+            response = jQuery.parseJSON(data);    
+            if(response.success)
+            {
+              setTimeout(function(){
+                window.location = "{{jump}}";
+              }, 2000);
+              $.pnotify({
+                  title: 'Notice',
+                  text: 'Upgrade to Pro Plan successful.',
+                  delay: 2000,
+                  hide: true
+              });
+            }
+            else
+            {
+              $.pnotify({
+                  title: 'Error',
+                  text: response.msg,
+                  delay: 2000,
+                  hide: true
+              });
+            }
+            $("#mainContainer").unmask();
+          });
+          };
+
+          StripeCheckout.open({
+            key:         '{{PUBLISH}}',
+            address:     false,
+            amount:      2900, //in cents
+            name:        'Subscribe for Pro Plan',
+            description: "Monthly Subscription for $29.00",
+            panelLabel:  'Subscribe',
+            token:       token
+          });
+          return false;
+        }
+        else if(level == "Platinum"){
+          mixpanel.track("pay platinum");
+          var token = function(res){
+          $.post('/accounts/doPayment/',
+          {
+            'plan':"Platinum",
+            'stripeToken':res.id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          function(data){
+            response = jQuery.parseJSON(data);
+            if(response.success)
+            {
+              setTimeout(function(){
+                window.location = "/";
+              }, 4500);
+              $.pnotify({
+                  title: 'Notice',
+                  text: 'Upgrade to Platinum Plan successful.',
+                  delay: 2000,
+                  hide: true
+              });
+            }
+            else
+            {
+              $.pnotify({
+                  title: 'Error',
+                  text: response.msg,
+                  delay: 2000,
+                  hide: true
+              });
+            }
+          });
+          };
+
+          StripeCheckout.open({
+            key:         '{{PUBLISH}}',
+            address:     false,
+            amount:      29900, //in cents
+            name:        'Subscribe for Platinum Plan',
+            description: "Monthly Subscription for $299.00",
+            panelLabel:  'Subscribe',
+            token:       token
+          });
+          return false;
+        }
+      })
+
+  </script>
+
+{% endblock %} 

@@ -1,0 +1,112 @@
+{% extends "base.html" %} 
+{% block css %}
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+{% endblock %}  
+
+{% block content %}  
+    <div class="container">
+      <form action="/accounts/doLogin/" method="post" class="form-signin">{% csrf_token %}
+      
+      <div class="alert {% if not Error %}hide{% endif %}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> <p id="msg">{{Error}}</p>
+      </div>
+      
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input name="email" type="text" class="input-block-level" placeholder="Email address">
+        <input name="password" type="password" class="input-block-level" placeholder="Password">
+        <input name="next" type="hidden"  value="{{next}}">
+        <input name="token" type="hidden"  value="{{token}}">
+        <div class="row" style="margin-left: 0px; margin-bottom: 6px; margin-top: -5px;"><a href="/password/recover/">Forgot password?</a></div>
+
+        <button class="btn btn-large btn-primary" style="width: 300px;" type="submit">Sign in</button>
+        <label class="checkbox pull-right" style="margin-top: 6px;">
+          or<a href="/accounts/register/"> sign up to Signl</a>
+        </label>
+        <br><br>
+        <script type="IN/Login" data-onAuth="onLinkedInAuth"></script>
+      </form>
+
+    </div> <!-- /container -->
+
+{% endblock %}  
+
+{% block javascript %}
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+        api_key: b6rpwk5o3k0w
+        scope: r_basicprofile r_emailaddress
+    </script>
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('#headTab li:last').addClass("active");
+      mixpanel.track("login page");
+    });
+    </script>
+
+    <script type="text/javascript">
+
+        $('.btn-primary').click(function(e){
+	  mixpanel.track("email login");
+        });
+
+      function onLinkedInAuth() {
+        IN.API.Profile("me").fields("id,firstName,lastName,headline,emailAddress,pictureUrl")
+          .result( function(me) {
+             mixpanel.track("linkedin login");
+             $.post("/accounts/doLogin/", 
+             { 
+              'linkedinId' : me.values[0].id,
+              'firstname' : me.values[0].firstName,
+              'lastname' : me.values[0].lastName,
+              'email' : me.values[0].emailAddress,
+              'headline' : me.values[0].headline,
+              'picture' : me.values[0].pictureUrl,
+              'csrfmiddlewaretoken': '{{ csrf_token }}',
+              'token':'{{token}}'
+             },
+             function(data){
+              response = jQuery.parseJSON(data);
+              if(response.success == "True")
+                window.location = "/";
+             }
+             
+             );
+          });
+      }
+    </script>
+
+{% endblock %} 

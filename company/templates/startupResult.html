@@ -1,0 +1,557 @@
+{% extends "base.html" %} 
+{% block css %}
+    <style>
+      body {
+        padding-top: 80px; /* Only include this for the fixed top bar */
+      }
+
+    </style>
+{% endblock %}  
+
+{% block content %}  
+
+<div class="container-narrow">
+
+      <div class="row" style="margin-left: 9px;">
+        <div class="span3" style="margin-left: -9px;">
+          <h2 style="margin-bottom: 0px;">{{company.name}}</h2>
+          <p><a href="http://{{company.website}}" target="_blank">{{company.website}}</a></p>
+        </div>
+
+        <div class="span4">
+          <div class="row-fluid" style="margin-top: 10px; height: 72px;">
+          <ul class="thumbnails">
+            {% if company.cbpermalink %}
+            <li class="span2">
+              <a href="http://www.crunchbase.com/company/{{company.cbpermalink}}" class="thumbnail" target="_blank">
+                <img src="{{ STATIC_URL }}/img/cb.png" alt="" style="width: 40px;">
+              </a>
+            </li>
+            {% endif %}
+            
+            {% if company.linkedInId != 0 %}
+            <li class="span2">
+              <a href="http://www.linkedin.com/company/{{company.linkedInId}}" class="thumbnail" target="_blank">
+                <img src="{{ STATIC_URL }}/img/linkedin.png" alt="" style="width: 40px;">
+              </a>
+            </li>
+            {% endif %}
+            {% if company.angelListSlug %}
+            <li class="span2">
+              <a href="https://angel.co/{{company.angelListSlug}}" class="thumbnail" target="_blank">
+                <img src="{{ STATIC_URL }}/img/angellist.png" alt="" style="width: 40px;">
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+          </div>
+        </div>
+            
+            <div class="span2 pull-right">
+              <a id="contactBtn" class="btn btn-info"  style="margin-top: 13px;">Contact</a>
+            </div>         
+            <div class="span pull-right">
+              <a id="trackBtn" class="btn btn-info"  style="margin-top: 13px;width:51px;">Track</a>
+            </div> 
+            
+
+
+      </div>
+
+    <ul id= "filterTab" class="nav nav-tabs" style="margin-bottom: 5px;">
+      <li class="active">
+      <a onClick="web()" style="margin-top: 4px;"><img style="width: 30px; padding-right: 4px;" src="/static/img/web_icon.png">Web Traffic</a>
+      </li>
+      <li><a onClick="app()"><img style="width: 40px;"src="/static/img/iphone_icon.png">App Rank</a></li>
+      <li><a onClick="linkedin()" style="margin-top: 4px;"><img style="width: 33px;"src="/static/img/linkedin.png">Linkedin</a></li>  
+    </ul>
+    <div id="flip">
+      <p id="shortOverview"></p>
+      <a id="more" class="hide" style="bold">See More</a>
+    </div>
+    <div id="panel" class="hide">
+      <p id="longOverview"></p>
+      <a id="less" style="bold">See Less</a>
+    </div>
+    <div id="webchart"></div>
+    <div id="appchart" class="hide" >   
+      <div class="row"> 
+        <div class="span1">
+        <a id="currentAppLink"  target="_blank">
+        <img id ="currentAppImg" class="img-polaroid"></img>
+        </a>
+        </div>
+        <div class="span3"><p id= "currentAppName"></p></div>
+        <div class="span3">
+          <select id="appSelect" class="hide">
+          </select>
+        </div>
+      </div>
+      <div id="appchartarea">
+        <p>iTunes rank history data is not avalible :(</p>
+      </div>
+    </div>
+    <div id="linkedinchart" class="hide"><p>Linkedin data is not avalible :(</p></div>
+    <div id="overview" class="hide">
+      <span id="overviewtext">Company overview is not ready yet. Come back later :)</p>
+    </div>
+
+    <hr>
+    <h4>Industry and location ranks</h4>
+    {% for item in tagsRank%}
+    <button class="btn jumptag" data-rank="{{item.rank}}" data-tagid="{{item.id}}" data-tagname="{{item.name}}" data-site="{{company.name}}" style="margin-bottom: 4px;">#{{item.rank}} in {{item.name}}</button>
+    {% endfor%}
+
+</div>
+    
+
+<!-- Modal MESSAGE-->
+<div id="msgModal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-header">
+    <h3 >Message to <span id="msgLabel" ><span></h3>
+  </div>
+  <div class="modal-body">
+    <table class="table noborder">
+      <tbody>
+
+          <tr>
+          <th>
+            <label for="id_subject">Message Type:</label>
+          </th>
+          <td>
+            <select id="msgType">
+              <option>Partnership</option>
+              <option>Press</option>
+              <option>Investor</option>
+              <option>Corporate Development</option>
+              <option>Jobs</option>
+              <option>General</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            <label for="id_subject">Subject:</label>
+          </th>
+          <td>
+            <input id="msg_subject" type="text" name="subject" maxlength="120">
+          </td>
+        </tr>
+
+
+        <tr>
+          <th>
+            <label for="id_body">Body:</label>
+          </th>
+          <td>
+            <textarea id="msg_body" rows="12" name="body" cols="55" style="width: 396px; height: 228px;"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button id="msgDiscard" class="btn pull-left" data-dismiss="modal" aria-hidden="true">Discard</button>
+    <button id="msgSend" class="btn btn-primary">Send</button>
+  </div>
+</div>
+<!-- Modal MESSAGE-->
+
+{% endblock %}  
+
+{% block javascript %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+      
+      $.get('/getTrafficData/', {
+        'id': {{company.id}}
+      }, function(data) {
+        response = jQuery.parseJSON(data);
+
+        drawChart(response.reach,'webchart');
+        if(response.app.length == 0)
+        {
+          
+        }
+        if(response.app.length>0)
+        {
+         $('#currentAppImg').show();
+         $('#currentAppImg').attr('src',response.app[0].icon);
+         $('#currentAppName').text(response.app[0].name);
+         $('#currentAppLink').attr('href',response.app[0].link);
+        }
+        if(response.app.length >1)
+        { 
+          $('#appSelect').show();
+          jQuery.each(response.app, function(index, item) {
+          $('#appSelect').append('<option data-icon='+item.icon+' data-link='+item.link+'>'+item.name+'</option>');
+          });
+        }
+
+        if(response.app.length>0)
+            getAppData(response.app[0].id);
+        
+        if(response.overview){
+          $('#overviewtext').html(response.overview);
+          var shorttext = response.overview.substring(0, 400);
+          shorttext = shorttext+'....';
+          $('#more').show();
+          $('#shortOverview').html(shorttext);
+          $('#longOverview').html(response.overview);
+        }
+        else{
+          $('#shortOverview').html('Sorry...Company overview not available yet.');          
+          $('#more').hide();
+        }
+        if(response.linkedin.length>0)
+        {
+          drawLinkedinChart(response.linkedin,'linkedinchart');
+        }
+
+
+      });
+      $('#panel').hide();
+      
+      $("#more").click(function(){
+        $("#flip").hide();
+        $("#panel").show();
+      });
+      $("#less").click(function(){
+        $("#panel").hide();
+        $("#flip").show();
+      });
+    });
+     
+   $('#contactBtn').click(function(e) {
+      
+      $('#msgModal').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+
+    });
+
+    $('#msgSend').click(function(e) {
+      contactSlug = "{{company.admin.slug}}"
+      var subject = $("#msg_subject").val();
+      var body = $('#msg_body').val();
+      var msgType = $('#msgType').find(":selected").text();
+      $('#msgModal').modal('hide');
+      
+      $.get('/accounts/contact/',{'slug':contactSlug,'type':msgType,'subject':subject,'body':body},function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Message delivered successfully.',
+                    delay: 2000,
+                    hide: true
+                });
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+    });
+
+   $('#trackBtn').click(function(e){
+      var slug = "{{company.slug}}";
+      $.post('/accounts/track/',
+        {'slug':slug,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Company Tracked!',
+                    delay: 2000,
+                    hide: true
+                });
+                $(self).addClass('disabled');
+                $(self).attr("disabled", "disabled");
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+    }); 
+
+    $('.jumptag').click(function(e){
+      var rank = $(this).data('rank');
+      var tagId = $(this).data('tagid');
+      var tagName = $(this).data('tagname');
+      var site = $(this).data('site');
+      window.location = "/searchTag/?tagId="+tagId+"&tagName="+tagName+"&rank="+rank+"&site="+site;
+    });
+
+    $('#appcheckbox').on('change', function() {
+    
+      if ($('#appcheckbox').is(":checked"))
+      {
+          $("tr[data-hasapp='False']").hide();
+      }
+      else
+      {
+          $("tr[data-hasapp='False']").show();
+      }
+        
+    });
+     
+    
+
+    $('#filterTab a').click(function(e) {
+      e.preventDefault();
+      $(this).tab('show');
+    })
+    
+    $('#appSelect').on('change', function() {
+        var selected = $(this).find('option:selected');
+        var link = selected.data('link');
+        var icon =  selected.data('icon');
+        var name =  selected.text();
+        $('#currentAppImg').attr('src',icon);
+        $('#currentAppName').text(name);
+        $('#currentAppLink').attr('href',link);
+
+    });
+
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {
+      'packages': ['corechart', 'annotatedtimeline']
+    });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    Date.prototype.addDays = function(days) {
+      var dat = new Date(this.valueOf())
+      dat.setDate(dat.getDate() + days);
+      return dat;
+    }
+
+    function drawChart(raw_data, domId) {
+      if(raw_data.length == 0) {
+        return;
+      }
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      data.addColumn('number', 'Reach');
+     
+      for(var i = 0; i < raw_data.length; i++) {
+        dateString=raw_data[i].date.toString();
+        var year = parseInt(dateString.substr(0, 4),10) ;
+			      var month =parseInt(dateString.substr(4,2),10)-1;
+			      var day = parseInt(dateString.substr(6,2),10);
+        var row_date = new Date(year,month,day);
+
+        data.addRow([row_date, raw_data[i].reach]);
+      };
+
+
+      options = {
+        'title': 'Website Traffic',
+        'width': 650,
+        'height': 450,
+        'titleTextStyle': {
+          color: 'black',
+          fontSize: 25,
+        },
+        curveType: "function",
+        'hAxis': {
+          title: "Date",
+          'titleTextStyle': {
+            color: 'black',
+            fontSize: 16,
+          },
+          format: 'MMM'
+        },
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById(domId));
+      chart.draw(data, options);
+    };
+
+
+    function drawLinkedinChart(raw_data,domId) {
+      if(raw_data.length == 0 || domId == undefined ) {
+        return;
+      }
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      data.addColumn('number', 'Employees');
+      data.addColumn('number', 'Followers');
+
+      //var firstDay = new Date(2012, 11, 15);
+      for(var i = 0; i < raw_data.length; i++) {
+        date = new Date(Date.parse(raw_data[i].date));
+        data.addRow([date, parseInt(raw_data[i].employee),parseInt(raw_data[i].follower)]);
+      };
+
+
+      options = {
+        'title': 'Linkedin Data',
+        'width': 500,
+        'height': 350,
+        'titleTextStyle': {
+          color: 'black',
+          fontSize: 25,
+        },
+        curveType: "function",
+        'hAxis': {
+          title: "Date",
+          'titleTextStyle': {
+            color: 'black',
+            fontSize: 16,
+          },
+          format: 'MMM'
+        },
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById(domId));
+      chart.draw(data, options);
+    };
+
+    function drawAppChart(raw_data, domId) {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      date_array =[];
+      dict = {};
+      for(var i = 0; i < raw_data.label.length; i++) {
+            data.addColumn('number', raw_data.label[i]);
+      }
+
+      for(var i = 0; i < raw_data.data.length; i++) {
+         // 
+         date = raw_data.data[i].date.substr(0,10).replace("/", "-");
+         
+         if(dict[date]!= undefined)
+         {
+           dict[date][raw_data.data[i].label] = raw_data.data[i].rank;
+         }else{
+           date_array.push(date);
+           dict[date] = {}
+           dict[date][raw_data.data[i].label] = raw_data.data[i].rank;
+         }
+      }
+
+      for(var i = 0; i < date_array.length; i++) {
+         var date = new Date(Date.parse(date_array[i]));
+         data_row= []
+         data_row.push(date);
+         for(var j = 0; j < raw_data.label.length; j++) {
+            data_row.push(dict[date_array[i]][raw_data.label[j]]);
+           
+         }
+         data.addRow(data_row);
+
+      };
+
+      options = {
+        'title': 'iTunes App Rank',
+        'width': 550,
+        'height': 350,
+        'vAxis':{ 
+          direction:-1
+         },
+        'titleTextStyle': {
+          color: 'black',
+          fontSize: 25,
+        },
+        curveType: "function",
+        'hAxis': {
+          title: "Date",
+          'titleTextStyle': {
+            color: 'black',
+            fontSize: 16,
+          },
+          format: 'MMM'
+        },
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById(domId));
+      chart.draw(data, options);
+    };
+
+    
+    function getAppData (appid) {
+        
+        $.get('/getAppRank/', {
+          'id': appid
+        }, function(data) {
+            response = jQuery.parseJSON(data);
+            if(response.label.length>0)  
+                drawAppChart(response,'appchartarea');
+
+        });
+    }
+    function web() {
+      $("#webchart").show();
+      $("#appchart").hide();
+      $("#flip").show();
+      $("#linkedinchart").hide();
+
+    }
+
+    function app() {
+      $("#appchart").show();
+      $("#webchart").hide();
+      $("#flip").hide();
+      $("#panel").hide();
+      $("#linkedinchart").hide();
+    }
+
+    function linkedin(){
+      $("#linkedinchart").show();
+      $("#flip").hide();
+      $("#panel").hide();
+      $("#webchart").hide();
+      $("#appchart").hide();
+    }
+
+    function showAll() {
+      $("#allResult").show();
+      $("#alexaTop").hide();
+    }
+
+    function reRank() {
+      var i = 1;
+      $('#table > tr').each(function() {
+        if($(this).is(":visible")) {
+          $(this).find(">:first-child").text(i);
+          i++;
+        }
+
+      });
+    }
+
+    function alexaTop() {
+      $("#allResult").hide();
+      $("#alexaTop").show();
+    }
+    </script>
+
+{% endblock %} 

@@ -1,0 +1,30 @@
+{
+    "sEcho": {{sEcho}},
+    "iTotalRecords": {{iTotalRecords}},
+    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
+    "actualNum" : {{actualNum}},
+
+    "aaData":[
+    {% for company in querySet %}
+    {
+    	
+        "0":"{{forloop.counter|add:startRecord}}",
+    	"1":"{% if forloop.counter < 6 %}Unlock{% else %}{{company.name}}{% endif %}",
+	"2":"{% if forloop.counter < 6 %}Unlock{% else %}{{company.website}}{% endif %}",
+        "3":"{% if company.smooth > 0 %}+{% endif %}{{company.smooth|floatformat:"0"}}%",
+        "4":"{{company.rank}}",
+        "DT_RowId":"{% if forloop.counter < 6 %}-1{% else %}{{company.slug}}{% endif %}",
+        {% if company.smooth > 0 %}
+        "DT_RowClass": "green"
+        {% elif company.smooth < 0 %}
+         "DT_RowClass": "red"
+        {%else%}
+         "DT_RowClass": ""
+        {% endif %}
+	}
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+    ]
+}

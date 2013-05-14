@@ -1,0 +1,128 @@
+{% extends "base.html" %} 
+{% block css %}
+    <style>
+      body {
+        padding-top: 120px; /* Only include this for the fixed top bar */
+      }
+    </style>
+{% endblock %}  
+
+{% block content %}  
+    <div class="container">
+      <br>
+      <div class="row" align="center" >
+        <h1>Find companies that are blasting off.</h1>
+        <h4>Search by industry, location, company name, or<a onClick = "allRank()" > view top companies overall</a><h4>
+        <br>
+          <div class="row" align="center"  style="width: 500px; margin-left: 60px;">
+          <ul id="typeTab" class="nav nav-pills">
+            <li value="1" class="active">
+              <a>Industry/Location</a>
+            </li>
+            <li value="2"><a  style="margin-left: 30px;">Company</a></li>
+            <li value="3"><a  style="margin-left: 30px;">App</a></li>
+          </ul>
+          </div>
+          <form class="form-search">
+          <input id="tagSearchBox" type="text" class="input-medium" style="width: 520px;">
+          <input id="companySearchBox" type="text" class="input-medium hide" style="width: 520px;">
+          </form>
+          <button class="btn btn-large btn-success" onClick = "search()"  >Search</button>
+      </div>
+    </div>
+{% endblock %}  
+
+{% block javascript %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autocomplete.js"></script>
+    <script>
+
+
+    $(document).ready(function() {
+      {% if homeTag %}
+      $('#searchTab').addClass("active");
+      {% else %}
+      //$('#headTab li:first').addClass("active");
+      {% endif %}
+      mixpanel.track("main search page");
+    });
+
+    $('#tagSearchBox').autocomplete({
+        serviceUrl: '/tagAuto/',
+        minChars: 2,
+        onSelect: function (suggestion) {
+            window.location = "/industry/"+suggestion.data+"/";
+        }
+    });
+
+    $('#companySearchBox').autocomplete({
+        serviceUrl: '/compAuto/',
+        minChars: 2,
+        onSelect: function (suggestion) {
+            window.location = "/company/"+suggestion.data
+        }
+    });
+
+    $('#typeTab a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+
+      switch($(this).text())
+      {
+        case "App":
+        {
+          window.location = "/searchApp/";
+          break;
+        }  
+        case "Company":
+        {
+          $('#companySearchBox').show();
+          $('#tagSearchBox').hide();
+
+          break;
+        }
+        case "Industry/Location":
+        { 
+          $('#companySearchBox').hide();
+          $('#tagSearchBox').show();
+          break;
+        }
+      }
+
+    })
+    
+    $('.form-search').keypress(function(e){
+        if ( e.which == 13 )
+        { 
+          e.preventDefault();
+          search();
+          return false;
+        }
+    });
+    
+    function allRank (argument) {
+        window.location = "/searchTag/?tagName=All";
+    }
+
+    function search()
+    {  
+       var searchText;
+       if($("#tagSearchBox").is(":visible"))
+       {
+          searchText = $("#tagSearchBox").val();
+       }
+       else
+       {
+          searchText = $("#companySearchBox").val();
+       }
+       
+       var searchType = $("#typeTab .active").val();
+       if( searchText.length == 0)
+       {
+          return;
+       }
+
+       window.location = "/search/?text="+searchText+"&type="+searchType;
+    }
+  </script>
+
+{% endblock %} 

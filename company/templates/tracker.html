@@ -1,0 +1,95 @@
+{% extends "base.html" %} 
+{% block css %}
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+    </style>
+{% endblock %}  
+
+{% block content %}  
+
+<div class="container-narrow">
+
+
+{% if not tracked_comp %}
+<center >
+<h3>You're not tracking any companies yet!</h3>
+<h3>The more companies you track, the more personalized your experience will be.</h3>
+<a class="btn btn-large btn-info" {% if request.user.tag.exists %}href="/searchTag/?tagName={{user.tag.all.0.tagName}}"{%else%}href="/searchTag/?tagName=All"{%endif%}>Find Companies</a>
+</center>
+{%else%}
+<table  class="table table-striped">
+  <caption><h2>Company Tracker</h2></caption>
+  <thead>
+    <tr>
+      <th>Company Name</th>
+      <th>Website</th>
+      <th>Function</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in tracked_comp %}
+    <tr id="{{item.slug}}">
+      <td><a href="/company/{{item.slug}}/">{{item.name}}</a></td>
+      <td>{{item.website}}</td>
+      <td><button class="btn btn-success" style="margin-bottom: 11px;" onClick="untrack('{{item.slug}}')">Untrack</button></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+
+</div> <!-- /container -->
+
+{% endblock %}  
+
+{% block javascript %}
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('#trackerHeadTab').addClass("active");
+    });
+
+    function untrack(slug){
+      $.post('/accounts/untrack/',
+        {'slug':slug,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: "Company "+slug+" Untracked!",
+                    delay: 2000,
+                    hide: true
+                });
+                $('#'+slug).hide();
+                //setTimeout(function(){window.location.reload();}, 1000)
+                
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+ 
+      });
+
+    }
+
+
+
+    </script>
+
+
+{% endblock %} 

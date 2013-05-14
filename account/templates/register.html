@@ -1,0 +1,145 @@
+{% extends "base.html" %} 
+{% block css %}
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+      .form-signin {
+        max-width: 310px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+    
+{% endblock %}  
+
+{% block content %}  
+    <div id="mainContainer" class="container">
+
+      <div class="row">
+        <div class="span6">
+          <h2 style="margin-left: 30px;color:#0088cc">{% if token %}Signup and view full message{% elif company %}View {{company.name|capfirst}}'s Momentum Ranking in {{company.defaultTag.tagName|capfirst}} for April 2013{% else %}Track the fastest growing companies in any industry.{% endif %}</h2>
+          <h3 style="margin: 10px 0 0 30px;">Signl analyzes multiple data sources to rank momentum for 200,000 companies.</h3>  
+          <h4 style="margin: 20px 0 0 60px;">• Track your industry's key players like never before</h4>
+          <h4 style="margin: 20px 0 0 60px;">• Know your competitor’s true momentum</h4>
+          <h4 style="margin: 20px 0 0 60px;">• Evaluate your own company's traction</h4>
+          <h4 style="margin: 20px 0 0 60px;">• Impress your boss or board!</h4>
+
+        </div>
+      <div class="span6">
+
+      <form id="register" action="/accounts/doRegister/" method="post" class="form-signin">{% csrf_token %}
+
+      <div class="alert {% if not messages %}hide{% endif %}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>  
+        <strong>Error!</strong><p id="msg">{% for message in messages %}{{ message }}{% endfor %}</p>
+      </div>
+
+        <h2 class="form-signin-heading">{% if company %}Sign up to track your industry{%else%}Apply for access to our private beta{%endif%}</h2>
+        <input name="firstname" type="text" class="input-block-level" placeholder="First Name" />
+        <input name="lastname" type="text" class="input-block-level" placeholder="Last Name" /> 
+        <input name="email" type="text" class="input-block-level" placeholder="Email address" />
+        <input name="password" type="password" class="input-block-level" placeholder="Password"/>
+        <input name="next" type="hidden"  value="{{next}}"/>
+        <input name="linkedinId" type="hidden"  />
+        <input name="headline" type="hidden"  />
+        <input name="picture" type="hidden"  />
+        <input name="token" type="hidden"  value="{{token}}"/>
+        <input name="comp" type="hidden"  value="{{company.slug}}"/>
+
+        <button class="btn btn-large btn-primary">Submit Free</button>
+        <br><br>
+        <script type="IN/Login" data-onAuth="onLinkedInAuth"></script>
+        <br><br>
+        <a href="/accounts/login/{% if next %}?next={{next}}{% endif %}">I already have an account</a>
+        <p style="position:relative;top:15px;color:grey;font-size:12px;"> By registering, you agree to our <a href="/terms/">Terms of Service</a> and <a href="/privatePolicy/">Privacy Policy</a>.</p>
+        </form>
+        {% if tag %}
+        </div>
+        </div>
+        {% endif %}
+      </div>
+      </div>
+
+
+    </div> <!-- /container -->
+{% endblock %}  
+
+{% block javascript %}
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+
+        api_key: b6rpwk5o3k0w
+        scope: r_basicprofile r_emailaddress
+    </script>
+
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+      $('#headTab li:eq(3)').addClass("active");
+      {% if company %}
+      mixpanel.track("register page from emailMarking");
+      {% else %}
+      mixpanel.track("register page");
+      {% endif %}
+      
+      {% if token %}
+      tokenStr= "{{token}}";
+      $('input[name=email]').val(tokenStr.split(":")[0]);
+      {% endif %}
+
+
+      mixpanel.track_forms("#register", "register fourm submit");
+    });
+    </script>
+
+    <script type="text/javascript">
+    
+        $('.btn-primary').click(function(e){
+        $("#mainContainer").mask({spinner: { lines: 10, length: 5, width: 3, radius: 10,shadow: true},
+                overlaySize: 100,
+                label: "loading"
+        });
+
+          mixpanel.track("email register");
+        });
+
+      function onLinkedInAuth() {
+        IN.API.Profile("me").fields("id,firstName,lastName,headline,emailAddress,pictureUrl")
+          .result(function(me) {
+          $('input[name=linkedinId]').val(me.values[0].id);
+          $('input[name=firstname]').val(me.values[0].firstName);
+          $('input[name=lastname]').val(me.values[0].lastName);
+          $('input[name=email]').val(me.values[0].emailAddress);
+          $('input[name=headline]').val(me.values[0].headline);
+          $('input[name=picture]').val(me.values[0].pictureUrl);
+            // AJAX call to pass back id to your server
+          $('#register').submit();
+          });
+      }
+    </script>
+
+{% endblock %} 

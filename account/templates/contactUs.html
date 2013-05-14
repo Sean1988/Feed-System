@@ -1,0 +1,45 @@
+  {% extends "base.html" %} 
+{% block css %}
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+    </style>
+{% endblock %}  
+
+{% block content %}  
+    <div class="container">
+      <div class="page-header" style="margin-bottom: 10px;">
+        <h2>Contact Us:</h2>
+      </div>
+
+      <div>
+        <h4>
+          Having trouble with the site? Billing questions? Comments? Suggestions?
+          <form style="margin-top: 10px;">  
+            <input TYPE="button" class="btn btn-info btn-large" value="Email Us" onClick="location.href='mailto:priceitceo@gmail.com?subject=Signl General Questions'"> 
+          </form>
+        </h4>
+        <br><br>
+        <h4>
+          Want to report a bug or problem with the site?<br>
+          <form style="margin-top: 10px;">  
+            <input TYPE="button" class="btn btn-info btn-large" value="Let Us Know" onClick="location.href='mailto:wenzhixue@gmail.com?subject=Signl Website Bugs'"> 
+          </form>
+        </h4>
+      </div>
+
+    </div> <!-- /container -->
+{% endblock %}
+
+{% block javascript %}
+
+  <script type="text/javascript">
+      $(document).ready(function() {
+      $('#contactTab').addClass("active");
+    });
+  </script>
+
+
+{% endblock %} 

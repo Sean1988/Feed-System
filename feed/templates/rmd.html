@@ -1,0 +1,27 @@
+<div id="selectInterestBox" class="modal hide fade in recommend" data-backdrop="static" data-keyboard="false" style="width: 570px;">
+    <div class="modal-header" style="padding-bottom:0px">
+      <h4 style="font-size:15px;" align="left">Access approved! Welcome to the Signl community!</h4>
+      <h3 style="margin-top: 0px;">Want to track any of these companies? <br>Stay up to date automatically.</h4>
+    </div>
+    <div class="modal-body" style="padding-top:2px;position:relative; ">
+       <p> 
+        <h4>You can always track or untrack them later.</h5>
+      </p>
+
+          <ul class="thumbnails" style="margin-left: 0px;">
+          {% for comp in rmd|slice:":8" %}
+          
+          <li class="span1" style="margin: 15px 30px 5px;" >
+              <a target="_blank"  href="/company/{{comp.slug}}">
+              <img class="thumbnail" src="{{comp.thumb}}" style="width=70px;height=70px">
+              </a>
+              <p style="margin-left: -8px;width:126px;overflow:hidden;height:24px;"><input style="margin-top: -3px;"type="checkbox" name="rmdComp" value="{{comp.id}}" checked><span style="padding-left: 10px;">{{comp.name}}</span></p>
+          </li>
+         {% endfor %}
+        </ul>
+     
+       <div align="center">
+        <button id="rmdContinue" onclick="updateInterests()" class="btn btn-success btn-large" style="margin:0 0 20px 0">Continue</button>
+       </div>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+{% extends "base.html" %} 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/DT_bootstrap.css">
+
+{% endblock %}  
+
+
+
+{% block content %}  
+
+<div class="container" style="width: 800px;">
+
+<div id="loading">
+</div>
+<table id="tag_table" cellpadding="0" cellspacing="0" border="0" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Industry Name</th>
+            <th>Companies</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% regroup nodes|dictsort:"item.tagName" by item.tagName|upper as nodes %}
+      {% for item in nodes%}
+        <tr id="{{item.id}}" name="{{item.slug}}">
+            <td>{{item.tagName}}</td>
+            <td>{{item.companyNum}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+</table>
+</div> <!-- /container -->
+
+{% endblock %}  
+
+{% block javascript %}
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/DT_bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}js/dataTables.fnReloadAjax.js"></script>
+
+<script>
+
+
+function pickIndustry(tagId,tagSlug)
+{   
+    $("#loading").mask({spinner: { lines: 10, length: 5, width: 3, radius: 10,shadow: true},
+          overlaySize: 100,
+          label: "loading"
+    });
+
+    $.get('/accounts/pickIndustry/',{ 'tagId' : tagId },function(data){
+    response = jQuery.parseJSON(data);
+    if(response.success)
+    {
+        $.pnotify({
+            title: 'Notice',
+            text: 'Industry subscribed successfully.',
+            delay: 2000,
+            hide: true
+        });
+        setTimeout(function() {window.location="/industry/"+tagSlug}, 2000);
+    }
+    else
+    {
+       $.pnotify({
+            title: 'Error',
+            text: response.msg,
+            delay: 2000,
+            hide: true
+        });
+    }
+
+  });
+
+}
+
+$(document).ready(function() {
+  
+
+      bootbox.alert("<h4>Please select your industry on the following page. Once you've made your selection, you'll be able to see your entire industry, sorted by company momentum.</h4>");
+
+      allTable = $('#tag_table').dataTable( {
+          "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+          "sPaginationType": "bootstrap",
+          "iDisplayLength": 250,
+          "sPaginationType": "full_numbers",
+          "oLanguage": {
+            "sLengthMenu": "_MENU_ records per page"
+          },
+          "bInfo":false,
+          "bPaginate": false,
+          "bFilter": false,
+          "bSort":false
+
+        } );
+      
+        $("#tag_table tbody").delegate("tr", "click", function() {
+          tagId = $(this).attr("id");
+          tagSlug = $(this).attr("name");
+          tagName = $(this).children('td').eq(0).text();
+          bootbox.confirm("<h3>Are you sure you want to pick industry "+tagName+"?</h3>", 'No','Yes, please', function(result) {
+            if(result)
+            {
+              pickIndustry(tagId,tagSlug);
+            }
+          }); 
+
+        });
+
+
+} );
+</script>
+{% endblock %} 

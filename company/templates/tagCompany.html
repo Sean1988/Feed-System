@@ -1,0 +1,458 @@
+{% extends "base.html" %} 
+{% block css %}
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+        background-color: #D9D9D9;
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+      .table th, .table td {
+        padding: 6px;
+      }
+      .subrow td{
+         border-top: 0px;
+         border-top-color:white;
+      }
+      .subrow{
+         border-top: 0px;
+         border-top-color:white;
+         background-color:white;
+      }
+     td:nth-child(2) {
+          color: black;
+      }
+
+    </style>
+{% endblock %}  
+
+{% block content %}  
+<div class="container-narrow">
+
+<h2>Fastest Growing Companies: {{tag.tagName|capfirst}} - March 2013 </h2>
+
+<table  class="table" style="margin-bottom: 0px;">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Company</th>
+      <th><a id="moment" data-toggle="tooltip" title="Signl's Momentum Score measures a company’s changing rate of growth. See below or our About section for a detailed explanation." >Momentum Score</a></th>
+      <th>Web Traffic Rank</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td colspan="4"><a href="/accounts/register/?tag={{tag.slug}}" class="btn btn-link" style="padding-left: 0px;"> View Full List</a></td>
+    </tr>
+    {% for item in sub %}
+    <tr>
+      <td>{{forloop.counter|add:endRecord|add:1}}</td>
+      <td><a href="/accounts/register/?tag={{tag.slug}}">{{item.name}} ({{item.website}})</a></td>
+      <td>{% if item.smooth > 0 %}+{% endif %}{{item.smooth|floatformat:"0"}}%</td>
+      <td>{{item.rank}}</td>
+      <td><a class="btn btn-info trackBtn" >Track</a></td>
+    </tr>
+    {% endfor %}
+    <tr class="subrow" style="font-size: 17.5px;">
+      <td>{{startRecord|add:1}}</td>
+      <td><a href="/accounts/register/?tag={{tag.slug}}">{{comp.name}} ({{comp.website}})</a></td>
+      <td>{% if comp.smooth > 0 %}+{% endif %}{{comp.smooth|floatformat:"0"}}%</td>
+      <td>{{comp.rank}}</td>
+      <td><a class="btn btn-info trackBtn" >Track</a></td>
+    </tr>
+<tr class="subrow" style="padding-top: 0px; margin-bottom: 0px; padding-bottom: 0px; padding-left: 0px; border-top-width: 0px; margin-top: -3px;">
+
+<td colspan="2">
+      <div class="span4">
+        <ul id= "filterTab2" class="nav nav-tabs"  style="margin-bottom: 0px; width: 317px; margin-left: 53px;">
+        <li class="active">
+        <a onClick="web()">Web Traffic</a>
+        </li>
+        <li><a onClick="app()">App Rank</a></li> 
+        </ul>
+
+        <div id="webchart" style="margin-left: 30px;"></div>
+        <div id="appchart" class="hide" >   
+          <div class="row" style="margin-left: 24px; margin-top: 2px;"> 
+            <div class="span1">
+            <a id="currentAppLink"  target="_blank">
+            <img id ="currentAppImg" class="img-polaroid"></img>
+            </a>
+            </div>
+            <div class="span2" style="margin-left: 0px;"><h4 id= "currentAppName"></h4></div>
+          </div>
+          <div id="appchartarea">
+            <p>iTunes rank history data is not avalible :(</p>
+          </div>
+        </div><!-- appchart -->
+      </div><!-- span6 -->
+</td>
+
+<td colspan="3">
+      <center style="margin-left: -45px;">
+        <h3 style="text-align:center">View the full momentum rankings</h3>
+        <div>
+          <h5 >• Track your main competitors</h5>
+          <h5 >• Identify future rivals early</h5>
+          <h5 >• See where you stand</h5>
+        <div/>
+        <a  href="/accounts/register/?tag={{tag.slug}}" class="btn btn-large btn-success"  style="margin-bottom: 10px;">Sign up</a>
+
+      </center><!-- span6 -->
+</td> 
+
+    </tr>  
+
+    {% for item in sub2 %}
+    <tr>
+      <td style="width: 80px;">{{forloop.counter|add:startRecord|add:1}}</td>
+      <td style="width: 313px;"><a href="/accounts/register/?tag={{tag.slug}}">{{item.name}} ({{item.website}})</a></td>
+      <td style="width: 243px;">{% if item.smooth > 0 %}+{% endif %}{{item.smooth|floatformat:"0"}}%</td>
+      <td style="width: 156px;">{{item.rank}}</td>
+      <td ><a class="btn btn-info trackBtn" >Track</a></td>
+    </tr>
+    {% endfor %}
+      <tr>
+      <td></td>
+      <td colspan="4"><a href="/accounts/register/?tag={{tag.slug}}&amp;comp={{comp.slug}}" class="btn btn-link" style="padding-left: 0px;"> View Full List</a></td>
+    </tr>
+
+  </tbody>
+
+</table>
+
+
+<h5>Signl Momentum Score: To accurately assess a company's traction, Signl aggregates evidence of overall company growth—like changes in web traffic, app rank, social buzz, and increased hiring—and calculates a weighted, up-to-date Momentum Score that empirically reflects a company’s changing growth pattern. </h5>
+</div> <!-- /container -->
+
+{% endblock %}  
+
+{% block javascript %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    $("#moment").tooltip();
+    $(document).ready(function() {
+
+      mixpanel.track("tag company page");
+      $.get('/getTrafficData/', {
+        'id': {{comp.id}}
+      }, function(data) {
+        response = jQuery.parseJSON(data);
+
+        drawChart(response.reach,'webchart');
+        if(response.app.length == 0)
+        {
+          
+        }
+        if(response.app.length>0)
+        {
+         $('#currentAppImg').show();
+         $('#currentAppImg').attr('src',response.app[0].icon);
+         $('#currentAppName').text(response.app[0].name);
+         $('#currentAppLink').attr('href',response.app[0].link);
+        }
+        if(response.app.length >1)
+        { 
+          $('#appSelect').show();
+          jQuery.each(response.app, function(index, item) {
+          $('#appSelect').append('<option data-icon='+item.icon+' data-link='+item.link+'>'+item.name+'</option>');
+          });
+        }
+
+        if(response.app.length>0)
+            getAppData(response.app[0].id);
+          
+        $('#chartModal').modal('toggle')
+
+      });
+    });
+     
+    $('.trackBtn').click(function(e){
+      {% if request.user.is_authenticated %}
+      var slug = "{{comp.slug}}";
+      $.post('/accounts/track/',
+        {'slug':slug,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+                $.pnotify({
+                    title: 'Notice',
+                    text: 'Company Tracked!',
+                    delay: 2000,
+                    hide: true
+                });
+          }else
+          {
+                $.pnotify({
+                    title: 'Error',
+                    text: response.msg,
+                    delay: 2000,
+                    hide: true
+                });
+          }
+      });
+      {% else %}
+        window.location = "/accounts/register/?tag={{tag.slug}}";
+      {% endif %}  
+ 
+
+
+    });
+
+    $('#appcheckbox').on('change', function() {
+    
+      if ($('#appcheckbox').is(":checked"))
+      {
+          $("tr[data-hasapp='False']").hide();
+      }
+      else
+      {
+          $("tr[data-hasapp='False']").show();
+      }
+        
+    });
+     
+    
+
+    $('#filterTab a').click(function(e) {
+      e.preventDefault();
+      $(this).tab('show');
+    })
+    
+    $('#appSelect').on('change', function() {
+        var selected = $(this).find('option:selected');
+        var link = selected.data('link');
+        var icon =  selected.data('icon');
+        var name =  selected.text();
+        $('#currentAppImg').attr('src',icon);
+        $('#currentAppName').text(name);
+        $('#currentAppLink').attr('href',link);
+
+    });
+
+    $('#filterTab2 a').click(function(e) {
+      e.preventDefault();
+      $(this).tab('show');
+    })
+
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {
+      'packages': ['corechart', 'annotatedtimeline']
+    });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    Date.prototype.addDays = function(days) {
+      var dat = new Date(this.valueOf())
+      dat.setDate(dat.getDate() + days);
+      return dat;
+    }
+
+    function drawChart(raw_data, domId) {
+      if(raw_data.length == 0 ||  domId == undefined ) {
+        return;
+      }
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      data.addColumn('number', '');
+     
+      for(var i = 0; i < raw_data.length; i++) {
+        row_date = new Date(Date.parse(raw_data[i].date));
+        data.addRow([row_date, raw_data[i].reach]);
+      };
+
+
+      options = {
+        'width': 330,
+        'height': 150,
+        'titleTextStyle': {
+          color: 'black',
+          fontSize: 15,
+        },
+        curveType: "function",
+
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById(domId));
+      chart.draw(data, options);
+    };
+
+
+
+    function drawAppChart(raw_data, domId) {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      date_array =[];
+      dict = {};
+      for(var i = 0; i < raw_data.label.length; i++) {
+            data.addColumn('number', raw_data.label[i]);
+      }
+
+      for(var i = 0; i < raw_data.data.length; i++) {
+         // 
+         date = raw_data.data[i].date.substr(0,10).replace("/", "-");
+         
+         if(dict[date]!= undefined)
+         {
+           dict[date][raw_data.data[i].label] = raw_data.data[i].rank;
+         }else{
+           date_array.push(date);
+           dict[date] = {}
+           dict[date][raw_data.data[i].label] = raw_data.data[i].rank;
+         }
+      }
+
+      for(var i = 0; i < date_array.length; i++) {
+         var date = new Date(Date.parse(date_array[i]));
+         data_row= []
+         data_row.push(date);
+         for(var j = 0; j < raw_data.label.length; j++) {
+            data_row.push(dict[date_array[i]][raw_data.label[j]]);
+           
+         }
+         data.addRow(data_row);
+
+      };
+
+      options = {
+        'title': 'iTunes App Rank',
+        'width': 330,
+        'height': 150,
+        'vAxis':{ 
+          direction:-1
+         },
+        'titleTextStyle': {
+          color: 'black',
+          fontSize: 15,
+        },
+        curveType: "function",
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById(domId));
+      chart.draw(data, options);
+    };
+
+    function clickLine(companyId) {
+      $('#appSelect').empty();
+      $('#appSelect').hide();
+      $('#currentAppImg').hide();
+      $('#currentAppImg').attr('src',"");
+      $('#currentAppName').text("");
+      $('#currentAppLink').attr('href',"");
+      
+      $.get('/getTrafficData/', {
+        'id': companyId
+      }, function(data) {
+        response = jQuery.parseJSON(data);
+
+        drawChart(response.reach,'webchart');
+        if(response.app.length == 0)
+        {
+          
+        }
+        if(response.app.length>0)
+        {
+         $('#currentAppImg').show();
+         $('#currentAppImg').attr('src',response.app[0].icon);
+         $('#currentAppName').text(response.app[0].name);
+         $('#currentAppLink').attr('href',response.app[0].link);
+        }
+        if(response.app.length >1)
+        { 
+          $('#appSelect').show();
+          jQuery.each(response.app, function(index, item) {
+          $('#appSelect').append('<option data-icon='+item.icon+' data-link='+item.link+'>'+item.name+'</option>');
+          });
+        }
+
+        if(response.app.length>0)
+            getAppData(response.app[0].id);
+        
+        $('#chartModal').modal('toggle')
+
+      });
+
+    }
+    
+    function getAppData (appid) {
+        
+        $.get('/getAppRank/', {
+          'id': appid
+        }, function(data) {
+            response = jQuery.parseJSON(data);
+            if(response.label.length>0)  
+                drawAppChart(response,'appchartarea');
+
+        });
+    }
+    function web() {
+      $("#webchart").show();
+      $("#appchart").hide();
+    }
+
+    function app() {
+      $("#appchart").show();
+      $("#webchart").hide();
+    }
+    
+    function showAll() {
+      $("#allResult").show();
+      $("#alexaTop").hide();
+    }
+
+    function reRank() {
+      var i = 1;
+      $('#table > tr').each(function() {
+        if($(this).is(":visible")) {
+          $(this).find(">:first-child").text(i);
+          i++;
+        }
+
+      });
+    }
+
+    function alexaTop() {
+      $("#allResult").hide();
+      $("#alexaTop").show();
+    }
+    </script>
+
+{% endblock %} 

@@ -1,0 +1,164 @@
+{% extends "base.html" %} 
+{% block css %}
+
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+      .form-signin {
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        width: 420px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+    <link href="{{ STATIC_URL }}css/jquery.loadmask.spin.css" rel="stylesheet" type="text/css" />
+{% endblock %}  
+
+{% block content %}  
+    <div id="mainContainer" class="container">
+      
+      <div class="alert {% if not Error %}hide{% endif %}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> <p id="msg">{{Error}}</p>
+      </div>
+
+     <form id="profile" action="/accounts/basic-profile/" method="post" class="form-signin">{% csrf_token %}
+
+      <div class="alert {% if not messages %}hide{% endif %}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>  
+        <strong>Error!</strong><p id="msg">{% for message in messages %}{{ message }}{% endfor %}</p>
+      </div>
+
+        <h3 class="form-signin-heading" style="margin-bottom: 25px;">Finish your profile to see your industry's rankings.</h3>
+
+        <div class="row">
+          <div class="span1">
+            <h4>Company:</h4>
+          </div>
+          <div class="span3">
+            <input id="profileCompany" name="company" type="text" class="input-block-level" placeholder="Company name" {%if user.comp%}value="{{user.comp.name}}"{%endif%}/>
+          </div>
+        </div>  
+
+        <div class="row">
+          <div class="span1" style="width: 71px;">
+            <h4>Job title:</h4>
+          </div>
+          <div class="span3">
+            <input name="title" type="text" class="input-block-level" placeholder="Title" />
+          </div>
+        </div>  
+        <div class="row">
+          <div class="span1">
+            <h4>Industry:</h4>
+          </div>
+          <div class="span3">
+            <input id="profileIndustry" name="industry" type="text" class="input-block-level" placeholder="Industry" {%if user.comp%}value="{{user.comp.defaultTag.tagName}}"{%endif%}/>
+          </div>
+        </div>  
+        <input name="slug" type="hidden"  value="{{request.user.slug}}"/>
+        <div class="row">
+          <div class="span1">
+          </div>
+          <div class="span3">
+            <button id="doneProfile" class="btn btn-large btn-info" style="width:270px">Done!</button>
+          </div>
+        </div>  
+        </form>
+      </div>
+      </div>
+
+
+    </div> <!-- /container -->
+{% endblock %}  
+
+{% block javascript %}
+    <script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
+    <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.loadmask.spin.js'></script>
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+
+        api_key: b6rpwk5o3k0w
+        scope: r_basicprofile r_emailaddress
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('#headTab li:eq(3)').addClass("active");
+      mixpanel.track("profile fill page");
+      {% if token %}
+      tokenStr= "{{token}}";
+      $('input[name=email]').val(tokenStr.split(":")[0]);
+      {% endif %}
+    });
+    </script>
+
+
+  <script type="text/javascript">
+
+      $('#doneProfile').click(function(e){
+        $("#mainContainer").mask({spinner: { lines: 10, length: 5, width: 3, radius: 10,shadow: true},
+                overlaySize: 100,
+                label: "loading"
+        });
+      });
+
+    $('#profileCompany').blur(function() {
+      var companyName = $('#profileCompany').val();
+      if(companyName=="" || companyName == undefined) return;
+      $.post('/accounts/ajax/autoFillIndustry/',
+        {'name': companyName,
+         'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },function(data){
+          response = jQuery.parseJSON(data);
+          if(response.success)
+          {
+             $('#profileIndustry').val(response.tag);
+          }
+        });
+
+    });
+
+    mixpanel.track_forms("#profile", "profile fourm submit");     
+    $('#profileIndustry').autocomplete({
+        serviceUrl: '/tagAuto/',
+        minChars: 2,
+        params : {"onlyIndustry":true},
+        onSelect: function (suggestion) {
+           
+        }
+    });
+
+    $('#profileCompany').autocomplete({
+        serviceUrl: '/compAuto/',
+        minChars: 2,
+        onSelect: function (suggestion) {
+        
+        }
+    });
+
+    </script>
+
+{% endblock %} 

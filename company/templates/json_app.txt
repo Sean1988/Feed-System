@@ -1,0 +1,27 @@
+{
+    "sEcho": {{sEcho}},
+    "iTotalRecords": {{iTotalRecords}},
+    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
+    "aaData":[
+    {% for app in querySet %}
+    {
+    	
+        "0":"{{forloop.counter|add:startRecord}}",
+    	"1":"<img src='{{app.icon}}'>",
+		"2":"{{app.trackName}}",
+        "3":"{{app.score}}",
+        "DT_RowId":"{{app.id}}",
+        {% if app.score > 0 %}
+        "DT_RowClass": "green"
+        {% elif app.score < 0 %}
+         "DT_RowClass": "red"
+        {%else%}
+         "DT_RowClass": ""
+        {% endif %}
+	}
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+    ]
+}

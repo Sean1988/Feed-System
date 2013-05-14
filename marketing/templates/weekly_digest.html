@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Signl Weekly Feed</title>
+<style type="text/css">
+a:hover { text-decoration: underline !important; }
+</style>
+</head>
+
+<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f7f2e4;" bgcolor="#f7f2e4" leftmargin="0">
+<!--100% body table-->
+<table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f7f2e4">
+  <tr>
+    <td>
+    <!--email container-->
+<table bgcolor="#fffdf9" cellspacing="0" border="0" align="center" cellpadding="30" width="684">
+  <tr>
+    <td>
+    <!--email content-->
+    <table cellspacing="0" border="0" id="email-content" cellpadding="0" width="624">
+  <tr>
+    <td>
+    <!--section 1-->
+    <table cellspacing="0" border="0" cellpadding="0" width="100%">
+  <tr>
+    <td valign="top" align="center">
+  
+  <!--line break-->
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  </table><!--/line break-->
+  <h1 style="font-size: 36px; font-weight: normal; color: #333333; font-family: 'Raleway', sans-serif; margin-top: 0px; margin-bottom: 20px;">SIGNL  <em>Weekly Digest</em></h1>
+    <p style="font-size: 16px; line-height: 22px; font-family: 'Raleway', sans-serif; color: #333; margin: 0px;">
+      Here are a few stories about companies with momentum, and other interesting news! Have a great week, and check in at <a style="color: #08c;text-decoration: none;" href="http://www.signl.com/feed/">SIGNL</a> for more.
+    </p>
+    </td>
+  </tr>
+</table><!--/section 1-->
+
+    <!--section 3-->
+<table cellspacing="0" border="0" cellpadding="0" width="100%">
+  <tr>
+    <td>
+<!--line break-->
+  <table cellspacing="0" border="0" cellpadding="0" width="100%">
+  <tr>
+    <td height="52"><img src="http://www.signl.com/static/img/email/line-break.jpg" width="622" height="52">
+    </td>
+  </tr>
+  </table><!--/line break-->
+
+
+{% load feed_tip %}
+{% for item in feed_list%}
+
+{%if item.title %}
+<table cellspacing="0" border="0" cellpadding="0" width="100%">
+  <tr>
+    <td valign="top" width="10%" style="text-align:center;"><a style="text-decoration: none;"  href="http://www.signl.com/company/{{item.company.slug}}/"><img src="{{item.company.thumb}}" align="right" alt="img8" style="border: solid 1px gray;margin-bottom:10px;float:left;" width="80px" height="80px" />
+      <p style="font-weight: 400;">{{item.company.name}}</p></a></td>
+
+    <td valign="top" width="80%" style="padding-left: 20px;">
+    <a STYLE="TEXT-DECORATION: NONE;" href="http://www.signl.com/feed/" ><h1 style="font-size: 20px; font-family: 'Raleway', sans-serif; font-weight: 400; color: #08c; margin-top: 0px; margin-bottom: 12px;">{{item.title}}</h1></a>
+    <p style="font-size: 16px; line-height: 22px; font-family: 'Raleway', sans-serif; color: #333; margin: 0px;">
+      {{item.description}}<a style="color: #08c; text-decoration: none;" href="http://www.signl.com/feed/">  See SIGNL Feed &raquo;</a>
+    </p>
+    </td>
+  </tr>
+</table>
+{% elif item.type%}
+<table cellspacing="0" border="0" cellpadding="0" width="100%">
+  <tr>
+    <td valign="top" width="10%" style="text-align:center;"><a style="text-decoration: none;" href="http://www.signl.com/company/{{item.company.slug}}/"><img src="{{item.company.thumb}}" align="right" alt="img8" style="border: solid 1px gray;margin-bottom:10px;float:left;" width="80px" height="80px" />
+      <p style="font-weight: 400;">{{item.company.name}}</p></a></td>
+
+    <td valign="top" width="80%" style="padding-left: 20px;">
+    <a STYLE="TEXT-DECORATION: NONE;" href="http://www.signl.com/feed/" ><h1 style="font-size: 20px; font-family: 'Raleway', sans-serif; color: #08c;font-weight: 400; margin-top: 0px; margin-bottom: 12px;">{{item.company.name}}'s {{item |dataFeed_title}}</h1></a>
+
+    </td>
+    <td>
+      <a href="http://www.signl.com/company/{{item.company.slug}}/"><img src="http://www.signl.com/static/img/datafeed/{{item.company.id}}_{{item.type}}_{{item.period}}.png"/></a>
+    </td>
+  </tr>
+</table>
+{% endif %}
+
+<!--line break-->
+  <table cellspacing="0" border="0" cellpadding="0" width="100%">
+  <tr>
+    <td height="52"><img src="http://www.signl.com/static/img/email/line-break.jpg" width="622" height="52">
+    </td>
+  </tr>
+  </table><!--/line break-->
+
+  {%endfor%}
+
+
+    </td>
+  </tr>
+</table><!--/section 3-->
+    </td>
+  </tr>
+</table><!--/email content-->
+    </td>
+  </tr>
+</table><!--/email container-->
+<!--footer-->
+    <table width="680" border="0" align="center" cellpadding="30" cellspacing="0">
+  <tr>
+    <td valign="top">
+    <p style="font-size: 12px; line-height: 20px; font-family: 'Raleway', sans-serif; color: #b0a08b; margin: 0px;">
+    <a style="color: gray; text-decoration: none;" href="http://www.signl.com/accounts/emailSetting/">Subscription Settings</a>/<a style="color: gray; text-decoration: none;" href='%unsubscribe_url%'>Unsubscribe.</a></p>
+    </td>
+    <td valign="top"><p style="font-size: 12px; line-height: 20px; font-family: 'Raleway', sans-serif; color: #b0a08b; margin: 0px;">© 2013, SIGNL. 20 Jay St. New York City, NY, 11201</p></td>
+  </tr>
+  <tr>
+    <td height="30"></td>
+    <td height="30"></td>
+    </tr>
+  </table><!--/footer-->
+
+    </td>
+  </tr>
+</table><!--/100% body table-->
+</body>
+</html>

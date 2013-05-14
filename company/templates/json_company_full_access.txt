@@ -1,0 +1,28 @@
+{
+    "sEcho": {{sEcho}},
+    "iTotalRecords": {{iTotalRecords}},
+    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
+    "aaData":[
+    {% for company in querySet %}
+    {
+    	
+        "0":"{{forloop.counter|add:startRecord}}",
+    	"1":"{{company.name}}",
+	"2":"{{company.website}}",
+        "3":"{% if company.smooth > 0 %}+{% endif %}{{company.smooth|floatformat:"0"}}%",
+        "4":"{{company.rank}}",
+        "DT_RowId":"{{company.slug}}",
+        {% if company.smooth > 0 %}
+        "DT_RowClass": "green"
+        {% elif company.smooth < 0 %}
+         "DT_RowClass": "red"
+        {%else%}
+         "DT_RowClass": ""
+        {% endif %}
+	}
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+    ]
+}

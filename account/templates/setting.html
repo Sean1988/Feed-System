@@ -1,0 +1,206 @@
+  {% extends "base.html" %} 
+{% block css %}
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+
+      .form-signin {
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        width: 420px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+    </style>
+{% endblock %}  
+
+{% block content %}  
+    <div class="container">
+      <div class="page-header" style="margin-bottom: 10px;">
+        <h2>Settings</h2>
+      </div>
+
+      <div>
+        <h4>
+          <p>Change your basic information (name, company, title, industry)</p>
+          <input TYPE="button" class="btn btn-info btn-large" value="Change Info" onclick="toggleBasic()"> 
+        </h4>
+        <br><br>
+        <div id="modifyBasic" style="display:none;">
+          <div class="form-signin">
+            <h2 class="form-signin-heading">Edit Your Information</h2>
+            <input id="firstname" name="firstname" type="text" class="input-block-level" value="{{user.first_name}}" placeholder="First Name" />
+            <input id="lastname" name="lastname" type="text" class="input-block-level" value="{{user.last_name}}" placeholder="Last Name" /> 
+            <input id="profileCompany" name="company" type="text" class="input-block-level" value="{%if user.company_name%}{{user.company_name}}{%endif%}" placeholder="Company Name" /> 
+            <input id="headline" name="headline" type="text" class="input-block-level" value="{%if user.headline%}{{user.headline}}{%endif%}" placeholder="Your Title" />
+            <input id="profileIndustry" name="industry" type="text" class="input-block-level" value="{%if user.industry%}{{user.industry}}{%endif%}" placeholder="Your Industry" />            
+            <button id="basicSubmit" class="btn btn-large btn-primary">Submit</button>
+          </div>
+        </div>
+        <h4>
+          <p>Email notifications</p>
+          <input TYPE="button" class="btn btn-info btn-large" value="Go To Email Settings" onclick="emailSetting()"> 
+        </h4>
+        <br><br>
+        <h4>
+          <p>Create new password</p>
+          <input TYPE="button" class="btn btn-info btn-large" value="Change Password" onClick="togglePassword()">
+        </h4>
+        <br><br>
+        <div id="modifyPassword" style="display:none;">
+          <div class="form-signin">
+            <h2 class="form-signin-heading">Change Your Password</h2>
+            <input id="oldpassword" name="old_pass" type="password" class="input-block-level" placeholder="Old password"/>
+            <input id="newpassword" name="new_pass" type="password" class="input-block-level" placeholder="New password"/>
+            <input id="newconfirm" name="new_pass_confirm" type="password" class="input-block-level" placeholder="Re-enter new password"/>
+            <button id="passwordSubmit" class="btn btn-large btn-primary">Submit</button>
+          </div>
+        </div>
+
+        <div>
+          <h5>Please email us at info@signl.com to suspend or cancel your account.</h5>
+        </div>
+      </div>
+
+
+    </div> <!-- /container -->
+{% endblock %}
+
+{% block javascript %}
+
+  <script type="text/javascript">
+    function toggleBasic(){
+      $('#modifyBasic').toggle('slow');
+    };
+
+    function emailSetting(){
+      window.location="/accounts/emailSetting/";
+    };
+
+    function togglePassword(){
+      $('#modifyPassword').toggle('slow');
+    };
+
+    $('#basicSubmit').click(function(){
+        var first_name = $('#firstname').val();
+        var last_name = $('#lastname').val();
+        var company = $('#profileCompany').val();
+        var headline = $('#headline').val();
+        var industry = $('#profileIndustry').val();
+
+        $.post('/accounts/doSetting/',
+          {
+            'firstname': first_name,
+            'lastname': last_name,
+            'company': company,
+            'headline': headline,
+            'industry': industry,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          function(data){
+            response = jQuery.parseJSON(data);    
+            if(response.success)
+            {
+              setTimeout(function(){
+                window.location = "/accounts/setting/";
+              }, 3000);
+              $.pnotify({
+                  title: 'Notice',
+                  text: 'Update information successful.',
+                  delay: 2000,
+                  hide: true
+              });
+            }
+            else
+            {
+              $.pnotify({
+                  title: 'Error',
+                  text: response.msg,
+                  delay: 2000,
+                  hide: true
+              });
+            }
+          });
+        });
+
+      $('#passwordSubmit').click(function(){
+        var oldpassword = $('#oldpassword').val();
+        var newpassword = $('#newpassword').val();
+        var newconfirm = $('#newconfirm').val();
+
+        $.post('/accounts/resetPassword/',
+          {
+            'oldpassword': oldpassword,
+            'newpassword': newpassword,
+            'newconfirm': newconfirm,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          function(data){
+            response = jQuery.parseJSON(data);    
+            if(response.success)
+            {
+              setTimeout(function(){
+                window.location = "/accounts/setting/";
+              }, 3000);
+              $.pnotify({
+                  title: 'Notice',
+                  text: 'Update password successful.',
+                  delay: 2000,
+                  hide: true
+              });
+            }
+            else
+            {
+              $.pnotify({
+                  title: 'Error',
+                  text: response.msg,
+                  delay: 2000,
+                  hide: true
+              });
+            }
+          });
+        });
+
+  </script>
+
+  <script type="text/javascript">
+
+  $('#profileIndustry').autocomplete({
+      serviceUrl: '/tagAuto/',
+      minChars: 2,
+      params : {"onlyIndustry":true},
+      onSelect: function (suggestion) {
+         
+      }
+  });
+
+  $('#profileCompany').autocomplete({
+      serviceUrl: '/compAuto/',
+      minChars: 2,
+      onSelect: function (suggestion) {
+      
+      }
+  });
+
+  </script>
+
+{% endblock %} 
