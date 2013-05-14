@@ -34,8 +34,8 @@ PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
 sys.path.append(PROJECT_PATH)
 
-from mongoengine import *
-connect('blastoff',host='signl.com',port=27017)
+#from mongoengine import *
+#connect('blastoff',host='signl.com',port=27017)
 
 
 HAYSTACK_CONNECTIONS = {
