@@ -176,6 +176,19 @@ def getFeedForCompany(company):
 
 
 @login_required
+def feedTestPage(request):
+    start = request.GET.get('s')
+    end = request.GET.get('e')
+    if start == None or end == None:
+        dataFeed = DataFeed.objects.all().order_by('-percent')[0:50]
+    else:  
+        dataFeed = DataFeed.objects.all().order_by('-percent')[start:end]
+    return render(request, 'feedTest.html', locals())
+
+
+
+
+@login_required
 def feedPage(request):
     recommend = request.GET.get('rmd')
     tracker = request.user.tracker.all()
