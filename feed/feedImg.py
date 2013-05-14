@@ -28,8 +28,8 @@ def generateImgForWebFeed(webFeed,traffic):
         if len(traffic) < 181: return
         dataPad = traffic[-180:]
     
-    firstDate =  parser.parse(str(dataPad[0]['date'])).strftime('%B')[:3]
-    endDate =  parser.parse(str(dataPad[-1]['date'])).strftime('%B')[:3]
+    firstDate =  parser.parse(str(dataPad[0]['date'])).strftime('%m/%d')
+    endDate =  parser.parse(str(dataPad[-1]['date'])).strftime('%m/%d')
     dataStr = dataPadToString(dataPad,feedType) # get last two weeks data
     if dataStr == None:
         return

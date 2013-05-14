@@ -256,10 +256,25 @@ def createDataFeed(amount,percent,feedType,period,company,traffic):
     datafeed.save()
     generateImgForWebFeed(datafeed,traffic)
    
+def isSpikeTraffic(array):
+    count = 0 
+    length = len(array)
+    if length == 0 :
+        return True
+    for item in array:
+        if int(item) == 0:
+            count +=1
+    if float(count)/float(length) > 0.4:
+        return True
+    return False
+
+
+
 
 def generateReachFeed(traffic,company):
     reach = [pickle.loads(str(i['data']))[0] for i in traffic]
-    if len(reach)> 14 :# calculate 1 week
+    if len(reach)> 14 and not isSpikeTraffic(reach[-14:]):# calculate 1 week
+
         thisWeekAvg= float(sum(reach[-7:]))/7
         lastWeekAvg= float(sum(reach[-14:-7]))/7
         amount = thisWeekAvg-lastWeekAvg
@@ -269,7 +284,7 @@ def generateReachFeed(traffic,company):
             percent = abs(int(amount/lastWeekAvg))*100
         if abs(percent) > 5: 
             createDataFeed(amount,percent,'reach','1week',company,traffic)
-    if len(reach) > 61:#calculate 1 month
+    if len(reach) > 61 and not isSpikeTraffic(reach[-60:]):#calculate 1 month
         thisMonthAvg = float(sum(reach[-30:]))/30
         lastMonthAvg = float(sum(reach[-60:-30]))/30
         amount = thisMonthAvg-lastMonthAvg
@@ -279,7 +294,7 @@ def generateReachFeed(traffic,company):
             percent = abs(int(amount/lastMonthAvg))*100
         if abs(percent) > 5:
             createDataFeed(amount,percent,'reach','1month',company,traffic)
-    if len(reach) > 181:#calculate 3 month
+    if len(reach) > 181 and not isSpikeTraffic(reach[-180:]):#calculate 3 month
         thisThreeMonthAvg = float(sum(reach[-90:]))/90
         lastThreeMonthAvg= float(sum(reach[-180:-90]))/90
         print thisThreeMonthAvg-lastThreeMonthAvg
