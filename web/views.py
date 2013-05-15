@@ -70,7 +70,7 @@ def temp2():
         traffic = WebTraffic.objects.get(company_id = item.id).traffic
         print item.id
         if len(traffic) > 30:
-            generateRankFeed(traffic,item)
+            #generateRankFeed(traffic,item)
             generateReachFeed(traffic,item)
 
 #==================Fetch Alexa Data using AWIS API !=========================================    
@@ -264,46 +264,46 @@ def isSpikeTraffic(array):
     for item in array:
         if int(item) == 0:
             count +=1
-    if float(count)/float(length) > 0.4:
+    if float(count)/float(length) > 0.3:
         return True
     return False
-
-
 
 
 def generateReachFeed(traffic,company):
     reach = [pickle.loads(str(i['data']))[0] for i in traffic]
     if len(reach)> 14 and not isSpikeTraffic(reach[-14:]):# calculate 1 week
-
-        thisWeekAvg= float(sum(reach[-7:]))/7
-        lastWeekAvg= float(sum(reach[-14:-7]))/7
+        thisWeekAvg = float(sum(reach[-7:]))/7
+        lastWeekAvg = float(sum(reach[-14:-7]))/7
+        #print "last week avg = %s this week avg = %s " % (lastWeekAvg , thisWeekAvg)
         amount = thisWeekAvg-lastWeekAvg
         if lastWeekAvg == 0 : 
             percent = 0
         else:
-            percent = abs(int(amount/lastWeekAvg))*100
-        if abs(percent) > 5: 
+            percent = int(abs(amount/lastWeekAvg)*100)
+        if percent > 5: 
             createDataFeed(amount,percent,'reach','1week',company,traffic)
     if len(reach) > 61 and not isSpikeTraffic(reach[-60:]):#calculate 1 month
         thisMonthAvg = float(sum(reach[-30:]))/30
         lastMonthAvg = float(sum(reach[-60:-30]))/30
+        #print "last month avg = %s this month avg = %s " % (thisMonthAvg, thisMonthAvg)
         amount = thisMonthAvg-lastMonthAvg
         if lastMonthAvg == 0:
             percent = 0
         else:
-            percent = abs(int(amount/lastMonthAvg))*100
-        if abs(percent) > 5:
+            percent = int(abs(amount/lastMonthAvg)*100)
+        if percent > 5:
             createDataFeed(amount,percent,'reach','1month',company,traffic)
     if len(reach) > 181 and not isSpikeTraffic(reach[-180:]):#calculate 3 month
         thisThreeMonthAvg = float(sum(reach[-90:]))/90
-        lastThreeMonthAvg= float(sum(reach[-180:-90]))/90
-        print thisThreeMonthAvg-lastThreeMonthAvg
+        lastThreeMonthAvg = float(sum(reach[-180:-90]))/90
+        #print "last 3 month avg = %s this 3 month avg = %s " % (lastThreeMonthAvg, thisThreeMonthAvg)
         amount = thisThreeMonthAvg-lastThreeMonthAvg
         if lastThreeMonthAvg == 0 :
             percent = 0
         else:
-            percent = abs(int(amount/lastThreeMonthAvg))*100
-        if abs(percent) >5:
+            percent = int(abs(amount/lastThreeMonthAvg)*100)
+        #print percent 
+        if percent) 5:
             createDataFeed(amount,percent,'reach','3month',company,traffic)
 
 def generateRankFeed(traffic,company):
@@ -316,7 +316,7 @@ def generateRankFeed(traffic,company):
         if lastWeekAvg == 0 :
             percent = 0
         else:    
-            percent = abs(int(amount/lastWeekAvg))*100
+            percent = int(abs(amount/lastWeekAvg)*100)
         if percent >5:
             createDataFeed(amount,percent,'rank','1week',company,traffic)
     if len(rank)> 61 :
@@ -326,7 +326,7 @@ def generateRankFeed(traffic,company):
         if lastMonthAvg == 0:
             percent = 0
         else:
-            percent= abs(int(amount/lastMonthAvg))*100
+            percent= int(abs(amount/lastMonthAvg)*100)
         if percent >5:
             createDataFeed(amount,percent,'rank','1month',company,traffic)
     if len(rank) > 181:
@@ -336,7 +336,7 @@ def generateRankFeed(traffic,company):
         if lastThreeMonthAvg == 0:
             percent = 0
         else:
-            percent= abs(int(amount/lastThreeMonthAvg))*100
+            percent= int(abs(amount/lastThreeMonthAvg)*100)
         if percent >1:
             createDataFeed(amount,percent,'rank','3month',company,traffic)
       
