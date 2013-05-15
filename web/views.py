@@ -303,7 +303,7 @@ def generateReachFeed(traffic,company):
         else:
             percent = int(abs(amount/lastThreeMonthAvg)*100)
         #print percent 
-        if percent) 5:
+        if percent > 5:
             createDataFeed(amount,percent,'reach','3month',company,traffic)
 
 def generateRankFeed(traffic,company):
