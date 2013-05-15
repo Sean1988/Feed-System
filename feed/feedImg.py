@@ -17,7 +17,7 @@ def generateImgForWebFeed(webFeed,traffic):
     feedType = webFeed.type
     period = webFeed.period
     fileName = "%s_%s_%s.png" %(webFeed.company.id,feedType,period)
-    fileDir = '/home/ubuntu/blastoff/company/static/img/datafeed/%s' % fileName
+    fileDir = '/home/ubuntu/signl/static/img/datafeed/%s' % fileName
     if period == '1week':
         if len(traffic) < 15: return
         dataPad = traffic[-14:]
