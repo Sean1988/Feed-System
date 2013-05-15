@@ -208,6 +208,26 @@ def getTrafficData(request):
         return HttpResponse(data)
 
 
+def industryAutocomplete(request):
+    if request.method == 'GET':
+        query= request.GET.get('query')
+        suggestions = []
+        sgs = SearchQuerySet().models(Tag).autocomplete(content_auto=query,tagType="Industry")[:8]
+        for item in sgs:
+            suggestions.append({'value':item.object.tagName,'data':item.object.slug})
+        the_data = json.dumps(suggestions)
+        return HttpResponse(the_data, content_type='application/json')
+
+def locationAutocomplete(request):
+    if request.method == 'GET':
+        query= request.GET.get('query')
+        suggestions = []
+        sgs = SearchQuerySet().models(Tag).autocomplete(content_auto=query,tagType="Location")[:8]
+        for item in sgs:
+            suggestions.append({'value':item.object.tagName,'slug':item.object.slug})
+        the_data = json.dumps(suggestions)
+        return HttpResponse(the_data, content_type='application/json')
+
 def tagAutocomplete(request):
     if request.method == 'GET':
         query= request.GET.get('query')
@@ -224,6 +244,16 @@ def tagAutocomplete(request):
             'query': "Unit",
             'suggestions': suggestions
         })
+        return HttpResponse(the_data, content_type='application/json')
+
+def companyAutocomplete2(request):
+    if request.method == 'GET':
+        query= request.GET.get('query')
+        sgs= SearchQuerySet().models(Company).autocomplete(content_auto=query)[:8]
+        suggestions = []
+        for item in sgs:
+            suggestions.append({'value':item.object.name,'slug':item.object.slug})
+        the_data = json.dumps(suggestions)
         return HttpResponse(the_data, content_type='application/json')
 
 def companyAutocomplete(request):
