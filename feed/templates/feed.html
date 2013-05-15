@@ -141,7 +141,7 @@ border: none;
         <h5 style="text-align:center;margin-top:5px;">{{item.company.name}}</h5>
         </div>
         <div class="span7">
-          <h4 class="feed_headline"><a href="/company/{{item.company.slug}}">{{item.company.name}}</a>'s {{item |dataFeed_title}}</h4>
+          <h4 class="feed_headline"><a href="/company/{{item.company.slug}}">{{item.company.name}}'s {{item |dataFeed_title}}</a></h4>
           {% if item.company not in user.tracker.all %}
           <p><a name="{{item.company.slug}}" class="trackLink">Track {{item.company.name}}</a></p>
           {% endif %}
@@ -254,8 +254,11 @@ border: none;
               <p style="width:90px;overflow:hidden;height: 24px;">{{comp.name|truncatechars:10}}</p>
           </li>
          {% endfor %}
-         <p class="pull-right"><a href="/accounts/tracker/" style="padding-right: 10px;" >View All »</a></p>
+
         </ul>
+        <div class="row">
+         <p class="pull-right"><a href="/accounts/tracker/" style="padding-right: 10px;" >View All »</a></p>
+        </div>
       </div><!--tracking company block-->
 
 

@@ -15,20 +15,11 @@
         {% endif %}>
 
         {% if not isSearchPage %}
-         <div class="btn-group pull-left">
-          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span id="tabSearchMain">Industry/Location</span>
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="tabSearchLink">Industry/Location</a></li>
-            <li><a class="tabSearchLink">Company</a></li>
-          </ul>
-        </div>
 
           <div class="navbar-search pull-left">
-              <div class='input-append'>
-                  <input id="companyTabSearchBox" type="text"  style="display: none;" placeholder="Search..." />
-                  <input id="industryTabSearchBox" type="text"  placeholder="Search..." />
+              <div>
+                  <input id="topSearch" type="text"  placeholder="Search..." />
+   
                   <button  onClick="search()" class='btn add-on'>
                       <i class="icon-search"></i>
                   </button>

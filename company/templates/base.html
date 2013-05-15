@@ -21,6 +21,7 @@
     <!-- Include this file if you are using Pines Icons. -->
     <link href="{{ STATIC_URL }}css/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" type="text/css" />
     <link href="{{ STATIC_URL }}css/jquery.loadmask.spin.css" rel="stylesheet" type="text/css" />
+
     <link href="{{ STATIC_URL }}css/blastoff.css" rel="stylesheet">
     <style type="text/css">
       
@@ -80,13 +81,33 @@ mixpanel.init("2ab68194c0b5825d6e1983964aed96d0");</script><!-- end Mixpanel -->
     <script type="text/javascript" src="{{ STATIC_URL }}js/head.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.pnotify.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootbox.min.js"></script>
-
+ 
     {% if not isSearchPage %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/typeahead.js"></script>
     <script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
     <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.loadmask.spin.js'></script>
 
     <script type="text/javascript">
+
+
+     $('#topSearch').typeahead([
+    {
+      name: 'company',
+      remote: 'http://www.signl.com/compAuto2/?query=%QUERY',
+      header: '<h4 class="tt-auto-comp-head">Company</h4>'
+    },
+    {
+      name: 'industry',
+      remote: 'http://www.signl.com/indAuto/?query=%QUERY',
+      header: '<h4 class="tt-auto-comp-head">Industry</h4>'
+    },
+    {
+      name: 'location',
+      remote: 'http://www.signl.com/locAuto/?query=%QUERY',
+      header: '<h4 class="tt-auto-comp-head" >Location</h4>'
+    },
+    ]);
+
     $(".tabSearchLink").click(function() { 
        var selectedText = $(this).text();
        $("#tabSearchMain").text(selectedText);
@@ -107,21 +128,7 @@ mixpanel.init("2ab68194c0b5825d6e1983964aed96d0");</script><!-- end Mixpanel -->
 
     });
 
-    $('#companyTabSearchBox').autocomplete({
-        serviceUrl: '/compAuto/',
-        minChars: 2,
-        onSelect: function (suggestion) {
-            window.location = "/company/"+suggestion.data
-        }
-    });
 
-    $('#industryTabSearchBox').autocomplete({
-        serviceUrl: '/tagAuto/',
-        minChars: 2,
-        onSelect: function (suggestion) {
-            window.location = "/industry/"+suggestion.data+"/"
-        }
-    });
    function search(){
 
        var type= $("#tabSearchMain").text()
