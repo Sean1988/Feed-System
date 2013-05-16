@@ -21,7 +21,7 @@
       $el['prop'](ch) && $parent.addClass(ch);
   }
 
-  Radio.prototype.toggle = function () {    
+  Radio.prototype.toggle = function () { 
     var d = 'disabled'
       , ch = 'checked'
       , $el = this.$element
@@ -38,7 +38,7 @@
       });
     
       !$el['prop'](d) && $parent.addClass(ch) && $el.attr(ch, true); 
-      $el.trigger("toogle");      
+      $el.trigger($.Event('toggle'));      
   }
   
   Radio.prototype.init = function (element, options) {      

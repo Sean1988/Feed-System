@@ -68,52 +68,69 @@
   <div class="row-fluid">
     <div class="span3" style="border-right: solid 1px #e2e2e2;">
     <button class="btn btn-success" type="button" onClick="reLoadAjax()">Apply Filter</button>
-    <h5 class="filterTitle">Basic</h5>  
-    <label class="checkbox">
-        <input type="checkbox" name="mobileCheck"> Has Mobile App
+    <h5 class="filterTitle">Basic</h5> 
+
+    <label class="checkbox" >
+      <input type="checkbox" name="mobileCheck" value="" data-toggle="checkbox">
+       Has Mobile App
     </label>
 
-    <label class="checkbox">
-        <input type="checkbox" name="linkedinCheck"> Has Linkedin Profile
+    <label class="checkbox" >
+      <input type="checkbox" name="linkedinCheck" value="" data-toggle="checkbox">
+       Has Linkedin Profile
     </label>
+
+          
 
     <h5 class="filterTitle" >Traffic Rank</h5>
-    <label class="radio">
-    <input type="radio" name="trafficRadios"  value="all" checked>All results  
+    <label class="radio primary">
+        <input type="radio" name="trafficRadios"  value="all" data-toggle="radio" checked="">All results
     </label>
-    <label class="radio">
-      <input type="radio" name="trafficRadios" value="10k">Top 10k Globally
+    <label class="radio primary">
+      <input type="radio" name="trafficRadios" value="10k" data-toggle="radio">
+      Top 10k Globally
     </label>
-    <label class="radio">
-      <input type="radio" name="trafficRadios" value="100k">Top 100k Globally
+    <label class="radio primary">
+      <input type="radio" name="trafficRadios" value="100k" data-toggle="radio">
+      Top 100k Globally
     </label>
 
+
     <h5 class="filterTitle" >Universe{% if limited %} <a class="needUpgrade">(Enable)</a>{% endif %}</h5>
-    <label class="radio">
-    <input type="radio" name="universeRadios" value="all" checked {% if limited %}disabled{% endif %}>All results  
+    <label class="radio primary">
+        <input type="radio" name="universeRadios" value="all" data-toggle="radio" checked=""{% if limited %}disabled{% endif %}>All results
     </label>
-    <label class="radio">
-      <input type="radio" name="universeRadios" href="#" value="isAC" {% if limited %}disabled{% endif %}>AngelList/CrunchBase
+    <label class="radio primary">
+      <input type="radio" name="universeRadios" value="isAC" data-toggle="radio" {% if limited %}disabled{% endif %}>
+      AngelList/CrunchBase
     </label>
+
+
     <h5 class="filterTitle">Launched Date{% if limited %} <a class="needUpgrade">(Enable)</a>{% endif %}</h5>
-    <label class="radio">
-    <input type="radio" name="launchRadios" value="all" checked  {% if limited %}disabled{% endif %}>All results  
+    <label class="radio primary">
+        <input type="radio" name="launchRadios" value="all" data-toggle="radio" checked=""{% if limited %}disabled{% endif %}>All results
     </label>
-    <label class="radio">
-      <input type="radio" name="launchRadios" value="new" {% if limited %}disabled{% endif %}>Just Launched
+    <label class="radio primary">
+      <input type="radio"  name="launchRadios" value="new" data-toggle="radio" {% if limited %}disabled{% endif %}>
+      Just Launched
     </label>
-    <label class="radio">
-      <input type="radio" name="launchRadios" value="old" {% if limited %}disabled{% endif %}>Not just Launched
+    <label class="radio primary">
+      <input type="radio" name="launchRadios" value="old" data-toggle="radio" {% if limited %}disabled{% endif %}>
+      Not just Launched
     </label>
 
     <h5 class="filterTitle">Total Funding</h5>
-    <label class="radio">
-      <input id="fundRadioAll" type="radio" name="fundRadios" value="all" onClick="greyout()" checked{% if limited %}disabled{% endif %}>All Companies
+
+    <label class="radio primary">
+        <input id="fundRadioAll" type="radio" name="fundRadios" onClick="greyout()" value="all" data-toggle="radio" checked=""{% if limited %}disabled{% endif %}>All Companies
     </label>
-    <label class="radio">
-      <input id="fundRadioFunded" type="radio" name="fundRadios" value="funded" onClick="greyout()"{% if limited %}disabled{% endif %}><a id="fundRadioFundedTip" data-toggle="tooltip" title="Use the below range selector to pick desired funding range." style="color:black;">Funded Companies</a>
+    <label class="radio primary">
+      <input id="fundRadioFunded" type="radio" name="fundRadios" value="funded" onClick="greyout()" data-toggle="radio" {% if limited %}disabled{% endif %}><a id="fundRadioFundedTip" data-toggle="tooltip" title="Use the below range selector to pick desired funding range." style="color:black;">Funded Companies</a>
     </label>
     <br>
+    <br>
+    <br>
+
     <div id="slider-range">
       <div class="shadow">
         <div class="span2" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="[0,10]" style="width:200px" id="sl1"></div>
@@ -266,16 +283,13 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/DT_bootstrap.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/dataTables.fnReloadAjax.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-select.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-slider.js"></script>
     <script type="text/javascript" charset="utf-8">
     $("#moment").tooltip();
     $("#webRank").tooltip();
     $("#fundRadioFundedTip").tooltip();
-
+    
       var Million=1000000, Billion=1000000000, Trillion=1000000000000
       var allTable;
       var initDone = false;
@@ -606,20 +620,20 @@
         }
       }
     }
-
-    $("input:checkbox[name=mobileCheck]").change(function(){
-
-      if($(this).is(':checked')){
+    
+    $("input:checkbox[name=mobileCheck]").on('toggle',function(){
+      
+      if($(this).parent().hasClass('checked')){
           currentFilter[2].value = 1;
       } else {
           currentFilter[2].value = 0;
       }
-      mixpanel.track("mobile filter");
+      //mixpanel.track("mobile filter");
     });
 
-    $("input:checkbox[name=linkedinCheck]").change(function(){
-
-      if($(this).is(':checked')){
+    $("input:checkbox[name=linkedinCheck]").on('toggle',function(){
+      
+      if($(this).parent().hasClass('checked')){
           currentFilter[9].value = 1;
       } else {
           currentFilter[9].value = 0;
@@ -627,9 +641,9 @@
       //mixpanel.track("linkedin filter");
     });
 
-
-    $("input:radio[name=trafficRadios]").click(function() {
+    $("input:radio[name=trafficRadios]").on('toggle',function() {
        var value = $(this).val();
+
       if (value=='all')
       { 
          currentFilter[3].value = 0;
@@ -645,8 +659,9 @@
       //mixpanel.track("rank filter");
     });
 
-    $("input:radio[name=universeRadios]").click(function() {
-       var value = $(this).val();
+    $("input:radio[name=universeRadios]").on('toggle',function() {
+      var value = $(this).val();
+
       if (value=='all')
       { 
          currentFilter[4].value = 0;
@@ -658,7 +673,7 @@
       //mixpanel.track("universe filter");
     });
 
-    $("input:radio[name=launchRadios]").click(function() {
+    $("input:radio[name=launchRadios]").on('toggle',function() {
        var value = $(this).val();
       if (value=='all')
       { 
@@ -675,7 +690,7 @@
       //mixpanel.track("launch filter");
     });
 
-    $("input:radio[name=fundRadios]").click(function() {
+    $("input:radio[name=fundRadios]").on('toggle',function() {
        var value = $(this).val();
       if (value=='all')
       { 
@@ -978,6 +993,8 @@
       $("#linkedinchart").hide();
 
     }
+    $('[data-toggle="checkbox"]').checkbox();
+    $('[data-toggle="radio"]').radio();
     </script>
 
 {% endblock %} 
