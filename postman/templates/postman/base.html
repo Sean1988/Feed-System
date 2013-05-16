@@ -6,9 +6,9 @@
 <link href='{{ STATIC_URL }}postman/css/postman.css' rel='stylesheet' type='text/css'> 
 {% endblock %}
 {% block postman_menu %}
-<div class="container">
+<div class="container" style="padding-top: 100px;">
 	<div class="span3 bs-docs-sidebar" style="border-right: solid 1px #e2e2e2;">
-	<ul id="postman_menu" class="nav nav-list bs-docs-sidenav affix" style="top: 70px;">{% postman_unread as unread_count %}
+	<ul id="postman_menu" class="nav nav-list bs-docs-sidenav affix" style="padding-top: 15px;">{% postman_unread as unread_count %}
 	 <li>
 	 	<a href="{% url 'postman_write' %}">
         <button class="btn btn-large btn-info"  type="button">&raquo;&nbsp;{% trans "Compose" %}</button></a>

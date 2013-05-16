@@ -2,7 +2,6 @@
 {% block css %}
     <!-- Pricing table -->
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/tsc_pricingtables.css" />
-    <link href="{{ STATIC_URL }}css/jquery.loadmask.spin.css" rel="stylesheet" type="text/css" />
     <!-- Pricing table responsive -->
     <style type="text/css">
       body {
@@ -151,8 +150,6 @@
 
 {% block javascript %}
   <script src="https://checkout.stripe.com/v2/checkout.js"></script>
-  <script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
-  <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.loadmask.spin.js'></script>
   <script>
   
     $(document).ready(function() {

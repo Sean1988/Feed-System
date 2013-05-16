@@ -37,6 +37,10 @@
     padding: 0;
     width: 228px;
 }
+body {
+    padding-top: 80px;
+    padding-bottom: 40px;
+}
 
 #id_body{
     width: 399px; 
