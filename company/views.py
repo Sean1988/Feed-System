@@ -275,7 +275,7 @@ def search(request):
     if request.method == 'GET':
         text = request.GET.get('text')
 
-        results = SearchQuerySet().models(Tag).auto_query(text).order_by('-tagType','rank')
+        results = SearchQuerySet().auto_query(text).order_by('-tagType','rank')
 
     return render(request, 'searchResult.html', locals())
 

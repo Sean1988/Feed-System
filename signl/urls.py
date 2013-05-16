@@ -5,6 +5,7 @@ from web.views import *
 from account.views import * 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from marketing.views import * 
 # Uncomment the next two lines to enable the admin:
@@ -35,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^contactUs/', contactUs),
     url(r'^privatePolicy/', privatePolicy),
     url(r'^terms/', termsOfService),
+    url(r'^blog/$', blogPage),
     url(r'^update/', update),
 
     url(r'^company/'+SLUG, getCompany),

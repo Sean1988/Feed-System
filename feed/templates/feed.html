@@ -39,14 +39,26 @@ a, button, input {
 .sepH_b {
     margin-bottom: 10px;
 }
+.tracking-head-area{
+    border-top-width: 0px;
+    background: white;
+    border-radius: 0px;
+    margin-top: -10px; 
+    border: 2px solid #D4D4D4;
+    padding-top: 0px;
+
+
+    
+    margin-bottom: 20px;
+}
 
 .tracking-head{
   background-color: #eee;
   text-align:center;
   height: 40px;
-  border-top-left-radius:10px;
-  border-top-right-radius:10px;
+ 
 
+ 
 }
 .feed-company-icon
 {
@@ -183,8 +195,8 @@ border: none;
     </div>
 
     <div class="span4"><!--right side bar-->
-      <div style="background:white;border-radius: 10px;margin-top: -10px;">
-        <div class="tracking-head"><h4 style="padding-top: 10px;" >Welcome {{request.user.first_name}}</h4></div>
+      <div class="tracking-head-area" >
+        <div class="tracking-head"><h4 style="padding-top: 10px;margin-top: 0px;" >Welcome {{request.user.first_name}}</h4></div>
         <div class="row-fluid" style="padding: 10px;">
           <div class="span3" style="margin-top: 10px;">  
             {% if request.user.linkedinId %}
@@ -222,8 +234,8 @@ border: none;
 
         </div>
       </div>
-      <div style="background:white;border-radius: 10px;"><!--recommended company block-->
-        <div class="tracking-head"><h4 style="padding-top: 10px;" >Suggested companies to track</h4></div>
+      <div class="tracking-head-area"><!--recommended company block-->
+        <div class="tracking-head"><h4 style="padding-top: 10px;margin-top:0px;" >Suggested companies to track</h4></div>
 
           {% for comp in recommend_tracker|slice:":8" %}
           <div class="row-fluid"style="margin:10px 15px 5px 15px" >
@@ -242,8 +254,8 @@ border: none;
          {% endfor %}
          <br>
       </div><!--tracking company block-->
-      <div style="background:white;border-radius: 10px;"><!--tracking company block-->
-        <div class="tracking-head"><h4 style="padding-top: 10px;" >Tracked Companies</h4></div>
+      <div class="tracking-head-area"><!--tracking company block-->
+        <div class="tracking-head"><h4 style="padding-top: 10px;margin-top:0px;" >Tracked Companies</h4></div>
         <ul class="thumbnails">
           {% for comp in tracker|slice:":8" %}
           <li class="span2" style="margin:15px 15px 5px 15px" >

@@ -1,10 +1,11 @@
 <div class="navbar navbar-fixed-top ">
   <div class="navbar-inner headerBackground" style="background: #f7f7f7;border-bottom: 1px solid #EAEAEA;">
     <div class="container">
-      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#nav-collapse-01">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#nav-collapse-01">0
       </button>
-      <a href="/" class="brand">Signl <span style="font-size: 19px;">Beta</span></a>
+    
       <div class="nav-collapse collapse" id="nav-collapse-01">
+        <a href="/" class="brand">Signl Beta</a>
         {% if user.is_authenticated %}
         <ul class="nav pull-left">
           <li id="msgHeadTab" ><a class="headTabLink" href="/message/inbox/"><img src="{{ STATIC_URL }}img/mailbox.png" style="width: 30px;"style="width: 30px;"></img>{% if postman_unread_count %} <strong>({{ postman_unread_count }})</strong>{% endif %}</a></li>
@@ -55,7 +56,7 @@
                 <b class="caret"></b></div>
 
                 {% else %}
-                <div style="width: 52px; height: 31px; margin-top: -5px;">
+                <div style="width: 56px; height: 31px; margin-top: -5px;">
                   <img style="width: 30px; height: 30px;" src="{{ STATIC_URL }}img/profileIcon.jpg"></img>
                 <b class="caret pull-right" style="margin-top: 12px;"></b></div>
                 {% endif %}

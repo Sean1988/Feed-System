@@ -1,6 +1,7 @@
 # Create your views here.
 
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -241,6 +242,9 @@ def recommendTrack(request):
                 return HttpResponse(json.dumps({'success':True}))
     return HttpResponse(json.dumps({'success':False,'msg':"Wrong Method"}))
 
+
+def blogPage(request):
+    return redirect('http://blog.signl.com/')
 
 def loginPage(request):
     next = request.GET.get('next')
