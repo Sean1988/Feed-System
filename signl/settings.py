@@ -69,7 +69,7 @@ DATABASES = {
 }
 
 
-
+CELERY_TIMEZONE = 'US/Eastern'
 
 POSTMAN_DISALLOW_ANONYMOUS = True
 POSTMAN_DISALLOW_MULTIRECIPIENTS = True
@@ -274,4 +274,8 @@ from datetime import timedelta
 CELERY_DISABLE_RATE_LIMITS = True
 CELERYBEAT_SCHEDULE = {
 
+    'add-every-monday-morning': {
+        'task': 'tasks.testTask',
+        'schedule': crontab(minute=35),
+    },
 }
