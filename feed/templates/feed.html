@@ -46,12 +46,12 @@ a, button, input {
     margin-top: -10px; 
     border: 2px solid #D4D4D4;
     padding-top: 0px;
-
-
-    
     margin-bottom: 20px;
 }
 
+.subTitle{
+    margin-bottom: 0px;
+}
 .tracking-head{
   background-color: #eee;
   text-align:center;
@@ -143,21 +143,24 @@ border: none;
       {% endif %}
 
       {% for item in feed_list%}
-      {% if item.type  %}
+      {% if item|isWebDataFeed   %}
         <div class="row-fluid dataFeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
         <div class="span2" style="margin-left: 10px;">
           <a href="#" style="border:0px">
-        <img src="{{item.company.thumb}}" class="img-rounded feed-company-icon">
+        <img src="{{item.0.company.thumb}}" class="img-rounded feed-company-icon">
         </a>
-        <h5 style="text-align:center;margin-top:5px;">{{item.company.name}}</h5>
+        <h5 style="text-align:center;margin-top:5px;">{{item.0.company.name}}</h5>
         </div>
         <div class="span7">
-          <h4 class="feed_headline"><a href="/company/{{item.company.slug}}">{{item.company.name}}'s {{item |dataFeed_title}}</a></h4>
-          {% if item.company not in user.tracker.all %}
-          <p><a name="{{item.company.slug}}" class="trackLink">Track {{item.company.name}}</a></p>
+          <h4 class="feed_headline"><a href="/company/{{item.0.company.slug}}">{{item.0.company.name}}'s {{item|first|dataFeed_title}}</a></h4>
+          <p class="subTitle">{% for subFeed in item|sub_feed%}
+          {{subFeed | webDataFeed_sub}}
+          {% endfor %}</p>
+          {% if item.0.company not in user.tracker.all %}
+          <p><a name="{{item.0.company.slug}}" class="trackLink">Track {{item.0.company.name}}</a></p>
           {% endif %}
         </div>
-        <div style="margin-left:0px;"class="span3"><a href="/company/{{item.company.slug}}"><img src="/static/img/datafeed/{{item.company.id}}_{{item.type}}_{{item.period}}.png"></a>
+        <div style="margin-left:0px;"class="span3"><a href="/company/{{item.0.company.slug}}"><img src="/static/img/datafeed/{{item.0.company.id}}_{{item.0.type}}_{{item.0.period}}.png"></a>
         </a>
         </div>
         </div >

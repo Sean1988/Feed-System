@@ -160,6 +160,8 @@ def queueFeed(newsFeed,dataFeed):
 
     return allFeed
 
+def getCompanyRelatedFeed(company):
+    pass
 
 def getFeedForCompany(company):
     result = []
@@ -171,7 +173,7 @@ def getFeedForCompany(company):
     else:
         if news.exists():
             result.append(news[0])
-        result+=data
+        result.append(list(data))
     return result 
 
 
@@ -198,8 +200,8 @@ def feedPage(request):
     
     feed_list= []
     
-    if hasIndustry:
-        competitor = Company.objects.filter(tags=user.tag.all()[0]).order_by('-smooth')[7:9]
+    #if hasIndustry:
+        #competitor = Company.objects.filter(tags=user.tag.all()[0]).order_by('-smooth')[7:9]
 
     if recommend !=None and int(recommend) == True or not hasTracker:
         try:
@@ -228,10 +230,10 @@ def feedPage(request):
     if not hasTracker and not hasIndustry and not request.user.comp:
         feed_list = getDefaultFeed()
     elif not hasTracker and hasIndustry :
-        feed_list = getDefaultFeed()
+        feed_list = getDefaultFeed() #getCompanyRelatedFeed(request.user.comp)
     else:
         for company in tracker:
-            result= getFeedForCompany(company)
+            result = getFeedForCompany(company)
             feed_list += result
     
     shuffle(feed_list)
