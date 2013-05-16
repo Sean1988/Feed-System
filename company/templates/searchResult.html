@@ -2,7 +2,7 @@
 {% block css %}
     <style>
       body {
-        padding-top: 60px; /* Only include this for the fixed top bar */
+        padding-top: 78px; /* Only include this for the fixed top bar */
       }
 
       .searchHead {
@@ -14,7 +14,7 @@
 
       }
       #searchBox{
-        margin-top: 13px;
+        margin-top: 7px;
         min-width:400px;
         height: 21px;
 
@@ -29,69 +29,49 @@
 
 {% block content %}  
   <div class="row searchHead">
-    <div class="span2">
+    <div class="span1">
       <h3 style="margin-top: 8px;margin-left: 15px;">Search</h3>
     </div> 
-    <div class="span6">
+    <div class="span5">
       <form class="form-search">
         <input id="searchBox" type="text" class="input-medium" style="">
       </form>
     </div>
     <div class="span3">
-      <button class="btn btn-success"  style="margin-top: 13px;" onClick = "search()"  >Search</button>
+      <button class="btn btn-success"  style="margin-top: 7px;" onClick = "searchNow()"  >Search</button>
     </div>  
   </div>
 
-  <div class="resultType">
-    <ul id="typeTab" class="nav nav-pills" style="height: 35px; margin-top: 10px; margin-left: 130px;">
-      <li value="1" class="active">
-        <a><h4 class="typeTagWord">Industry/Location</h4></a>
-      </li>
-      <li value="2" ><a style="margin-left: 30px;"><h4 class="typeTagWord">Company</h4></a></li>
-      <li value="3" ><a style="margin-left: 30px;"><h4 class="typeTagWord">App</h4></a></li>
-    </ul>
-  <hr>  
-  </div>
    
   <div class="results"  style="margin-left: 130px;">
-  <div class="row">
-    <div class="span3"><p style="color:gray;">About {{results.count}} results</p></div>
-    {% if type == "1" %}
-      <!--
-      <div class="span3">
-        <select id="tagSelect" style="width: 143px; margin-bottom: 0px;">
-          <option value="MarketTag">Industry</option>
-          <option value="LocationTag">Location</option>
-        </select>
-      </div>  
-    -->
-    {% endif %}
-  </div>
+  <p style="color:gray;">About {{results.count}} results</p>
   <table>
     <tbody>
 
-      {% if type == "1" %}
       {% for item in results %}
+
+      {% if item.object.tagType == 'Location' or item.object.tagType == 'Industry' %}
       <tr value="{{item.object.tagType}}">
         <td>
            <a class="tagLink" id="{{item.object.id}}" ><h3 style="margin-bottom: 0px;">{{item.object.tagName}}</h3></a>
            <p>{{item.object.tagType}}</p>
         </td>
       </tr>
-      {% endfor %}
-      {% endif %}
-
-
-      {% if type == "2" %}
-      {% for item in results %}
+      {% else %}
       <tr value="{{item.object.tagType}}">
         <td>
            <a class="companyLink" id="{{item.object.slug}}" ><h3 style="margin-bottom: 0px;">{{item.object.name}}</h3></a>
            <p>{{item.object.website}}</p>
         </td>
       </tr>
+      {%endif%}
+
+
       {% endfor %}
-      {% endif %}
+
+
+
+
 
 
     </tbody>
@@ -120,7 +100,7 @@
         if ( e.which == 13 )
         { 
           e.preventDefault();
-          search();
+          searchNow();
           return false;
         }
     });
@@ -146,16 +126,15 @@
     });
 
 
-    function search()
+    function searchNow()
     {
        var searchText = $("#searchBox").val();
-       var searchType = $("#typeTab .active").val();
        if( searchText.length == 0)
        {
           return;
        }
 
-       window.location = "/search/?text="+searchText+"&type="+searchType;
+       window.location = "/search/?text="+searchText;
     }
     </script>
 
