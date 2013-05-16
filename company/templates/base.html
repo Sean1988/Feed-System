@@ -125,25 +125,17 @@ mixpanel.init("2ab68194c0b5825d6e1983964aed96d0");</script><!-- end Mixpanel -->
          window.location = '/industry/'+item.slug+'/';
       }
     });
+    
+    function search(){
 
-   function search(){
-
-       var type= $("#tabSearchMain").text()
-
-       if(type == 'Industry/Location')
-       {
-         searchText = $("#industryTabSearchBox").val();
-         searchType = 1;
-
-       }
-       else if(type == 'Company')
-       {
-         searchText = $("#companyTabSearchBox").val();
-         searchType = 2;
-       }
-       if(searchText == "") return;
-      window.location = "/search/?text="+searchText+"&type="+searchType;
+       var searchText= $("#topSearch").val();
+       window.location = "/search/?text="+searchText;
     }
+
+    $('#topSearchBtn').click(function(e){
+        search();
+    });
+
 
     $('.input-append').keypress(function(e){
         if ( e.which == 13 )

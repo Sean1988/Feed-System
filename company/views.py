@@ -244,18 +244,8 @@ def companyAutocomplete(request):
 def search(request):
     if request.method == 'GET':
         text = request.GET.get('text')
-        type = request.GET.get('type')
-        
-        if type == None or not is_number(type):
-            return render(request, 'noResult.html', locals())
-        if int(type) == 1:# industry and loctaion
-            results = SearchQuerySet().models(Tag).auto_query(text).order_by('-tagType')
-        elif int(type) == 2:
-            results = SearchQuerySet().models(Company).auto_query(text).order_by('rank')
-        elif int(type) == 3:
-            results = SearchQuerySet().models(IosApp).auto_query(text)
-        else:
-            return render(request, 'noResult.html', locals())
+
+        results = SearchQuerySet().models(Tag).auto_query(text).order_by('-tagType','rank')
 
     return render(request, 'searchResult.html', locals())
 
