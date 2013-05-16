@@ -106,17 +106,17 @@ mixpanel.init("2ab68194c0b5825d6e1983964aed96d0");</script><!-- end Mixpanel -->
      $('#topSearch').typeahead([
     {
       name: 'company',
-      remote: 'http://www.signl.com/compAuto2/?query=%QUERY',
+      remote: '/compAuto2/?query=%QUERY',
       header: '<h4 class="tt-auto-comp-head">Company</h4>'
     },
     {
       name: 'industry',
-      remote: 'http://www.signl.com/indAuto/?query=%QUERY',
+      remote: '/indAuto/?query=%QUERY',
       header: '<h4 class="tt-auto-comp-head">Industry</h4>'
     },
     {
       name: 'location',
-      remote: 'http://www.signl.com/locAuto/?query=%QUERY',
+      remote: '/locAuto/?query=%QUERY',
       header: '<h4 class="tt-auto-comp-head" >Location</h4>'
     },
     ]);

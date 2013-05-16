@@ -157,7 +157,7 @@ border: none;
           <p><a name="{{item.company.slug}}" class="trackLink">Track {{item.company.name}}</a></p>
           {% endif %}
         </div>
-        <div style="margin-left:0px;"class="span3"><img src="/static/img/datafeed/{{item.company.id}}_{{item.type}}_{{item.period}}.png">
+        <div style="margin-left:0px;"class="span3"><a href="/company/{{item.company.slug}}"><img src="/static/img/datafeed/{{item.company.id}}_{{item.type}}_{{item.period}}.png"></a>
         </a>
         </div>
         </div >
