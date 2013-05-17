@@ -273,9 +273,9 @@ from celery.schedules import crontab
 from datetime import timedelta
 CELERY_DISABLE_RATE_LIMITS = True
 CELERYBEAT_SCHEDULE = {
-
     'add-every-monday-morning': {
         'task': 'tasks.testTask',
-        'schedule': crontab(minute=35),
+        'schedule': crontab(),
+        'options':{'queue','scheduler-queue'}
     },
 }
