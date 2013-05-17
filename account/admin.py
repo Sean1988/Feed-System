@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group,Permission
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.admin import SimpleListFilter
@@ -62,7 +62,7 @@ class MyUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name','last_name','slug','tier','headline')}),
-        ('Permissions', {'fields': ('is_admin','is_active','is_company','is_superuser')}),
+        ('Permissions', {'fields': ('is_admin','is_active','is_company','is_superuser','groups')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
@@ -79,6 +79,7 @@ class MyUserAdmin(UserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(MyUser, MyUserAdmin)
+admin.site.register(Permission)
 # ... and, since we're not using Django's builtin permissions,
 # unregister the Group model from admin.
-admin.site.unregister(Group)
+#admin.site.unregister(Group)

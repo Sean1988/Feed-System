@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 from datetime import datetime
 from uuslug import uuslug
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
@@ -40,7 +40,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser):
+class MyUser(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -64,7 +64,6 @@ class MyUser(AbstractBaseUser):
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_company = models.BooleanField(default=False) 
     register_time = models.DateTimeField(auto_now_add=True,blank=True, null=True)

@@ -14,7 +14,8 @@ from django.conf import settings as django_settings
 from django.contrib import messages
 from django.contrib.auth import logout as auth_logout, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
+from account.models import MyUser
+User = MyUser
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
