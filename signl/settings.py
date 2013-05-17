@@ -181,6 +181,8 @@ TEMPLATE_DIRS = (
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     'postman.context_processors.inbox',
+    'django.core.context_processors.request',
+    'sekizai.context_processors.sekizai'
 )
 
 
@@ -207,11 +209,22 @@ INSTALLED_APPS = (
     'postman',
     'django_ses',
     'password_reset',
-    'mptt',
+    
     'feed',
     'marketing',
     'ec2',
     'raven.contrib.django.raven_compat',
+    #for wiki
+    'django.contrib.humanize',
+    'django_notify',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki',
+    'wiki.plugins.attachments',
+    'wiki.plugins.images',
+    'wiki.plugins.macros',
+    #for wiki
 
 )
 
