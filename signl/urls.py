@@ -12,6 +12,7 @@ from marketing.views import *
 from django.contrib import admin
 admin.autodiscover()
 
+from wiki.urls import get_pattern as get_wiki_pattern
 
 SLUG = "(?P<slug>[-\w]+)"
 
@@ -59,5 +60,7 @@ urlpatterns = patterns('',
     url(r'^message/',include('postman.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password/',include('password_reset.urls')),
+
+    (r'^wiki/', get_wiki_pattern())
    
 )
