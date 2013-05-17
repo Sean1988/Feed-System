@@ -8,8 +8,6 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from marketing.views import * 
-from wiki.urls import get_pattern as get_wiki_pattern
-from django_notify.urls import get_pattern as get_notify_pattern
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -61,9 +59,5 @@ urlpatterns = patterns('',
     url(r'^message/',include('postman.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password/',include('password_reset.urls')),
-
-    url(r'^notify/', get_notify_pattern()),
-    url(r'', get_wiki_pattern())
-
    
 )
