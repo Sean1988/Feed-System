@@ -13,7 +13,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from wiki.urls import get_pattern as get_wiki_pattern
-
+from django_notify.urls import get_pattern as get_notify_pattern
 SLUG = "(?P<slug>[-\w]+)"
 
 urlpatterns = patterns('',
@@ -60,7 +60,7 @@ urlpatterns = patterns('',
     url(r'^message/',include('postman.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password/',include('password_reset.urls')),
-
-    (r'^wiki/', get_wiki_pattern())
+    url(r'^notify/', get_notify_pattern()),
+    url(r'^wiki/', get_wiki_pattern())
    
 )
