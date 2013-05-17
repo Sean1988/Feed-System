@@ -47,6 +47,9 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# WIKI
+WIKI_ACCOUNT_HANDLING = False
+#
 
 #SESSION_ENGINE = 'redis_sessions.session'
 #SESSION_REDIS_HOST = 'localhost'

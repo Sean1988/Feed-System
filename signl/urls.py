@@ -62,6 +62,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password/',include('password_reset.urls')),
     url(r'^notify/', get_notify_pattern()),
-    url(r'^wiki/', permission_required('polls.can_vote')(get_wiki_pattern())),
+    url(r'^wiki/', include(get_wiki_pattern())),
    
 )
