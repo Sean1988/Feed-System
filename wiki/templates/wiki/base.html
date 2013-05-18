@@ -2,15 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{% block wiki_pagetitle %}{% endblock %} - team wiki</title>
+    <title>{% block wiki_pagetitle %}{% endblock %} - Signl Team Wiki</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="www.django-wiki.org">
 
     <!-- Le styles -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
-       
+    <link href="{{ STATIC_URL }}wiki/bootstrap/css/wiki-bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}wiki/bootstrap/css/wiki-bootstrap-responsive.min.css" rel="stylesheet">
+        
     {% render_block "css" %}
     
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -81,8 +81,8 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="/wiki/">{% trans "Home" %}</a></li>
-              <li><a href="https://github.com/Signl/signl" target="_blank">{% trans "Code Repo" %}</a></li>
-              <li><a href="http://www.trello.com" target="_blank">{% trans "Trello" %}</a></li>
+              <li><a href="https://github.com/Signl/signl" target="_blank">{% trans "Signl Code" %}</a></li>
+              <li><a href="https://www.trello.com" target="_blank">{% trans "Trello Task" %}</a></li>
             </ul>
           </div>
         </div>
@@ -111,9 +111,11 @@
       <footer id="wiki-footer">
         <hr />
         {% block wiki_footer_logo %}
+  
         {% endblock %}
         {% block wiki_footer_prepend %}
         {% endblock %}
+  
         <div style="clear: both"></div>
       </footer>
       </div>
@@ -122,11 +124,10 @@
 
     {% endblock %}
 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}wiki/js/jquery.min.js"></script>
     <script src="{{ STATIC_URL }}wiki/js/core.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}wiki/bootstrap/js/bootstrap.min.js"></script>
     {% render_block "js" %}
   
   </body>
 </html>
-
