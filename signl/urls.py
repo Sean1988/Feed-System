@@ -11,7 +11,6 @@ from marketing.views import *
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-from django.contrib.auth.decorators import login_required, permission_required
 
 from wiki.urls import get_pattern as get_wiki_pattern
 from django_notify.urls import get_pattern as get_notify_pattern
@@ -62,6 +61,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^password/',include('password_reset.urls')),
     url(r'^notify/', get_notify_pattern()),
-    url(r'^wiki/', include(get_wiki_pattern())),
+    url(r'^wiki/', get_wiki_pattern()),
    
 )
