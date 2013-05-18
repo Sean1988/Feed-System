@@ -97,16 +97,6 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
             return True
         else:
             return False
-
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
     
     def save(self, *args, **kwargs):
         if self.slug == None and self.first_name !=None and self.first_name != "":
