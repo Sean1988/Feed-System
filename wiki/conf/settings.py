@@ -36,7 +36,7 @@ LOG_IPS_USERS = getattr( django_settings, 'WIKI_LOG_IPS_USERS', False )
 
 # NB! None of these callables need to handle anonymous users as they are treated
 # in separate settings...
-
+CORE_DOC = 'wiki-core'
 # A function returning True/False if a user has permission to
 # read contents of an article + plugins
 # Relevance: viewing articles and plugins
@@ -74,7 +74,7 @@ CAN_MODERATE = getattr( django_settings, 'WIKI_CAN_MODERATE', None )
 CAN_ADMIN = getattr( django_settings, 'WIKI_CAN_ADMIN', None )
 
 # Treat anonymous (non logged in) users as the "other" user group
-ANONYMOUS = getattr( django_settings, 'WIKI_ANONYMOUS', True )
+ANONYMOUS = getattr( django_settings, 'WIKI_ANONYMOUS', False)
 
 # Globally enable write access for anonymous users, if true anonymous users will be treated
 # as the others_write boolean field on models.Article. 

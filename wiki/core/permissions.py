@@ -19,20 +19,21 @@ def can_read(article, user):
         article_is_deleted = article.current_revision and article.current_revision.deleted
         if article_is_deleted and not article.can_delete(user):
             return False
-        
         # Check access for other users...
-        if user.is_anonymous() and not settings.ANONYMOUS:
+        if user.is_anonymous():
             return False
-        elif article.other_read:
-            return True
-        elif user.is_anonymous():
-            return  False
+
         if user == article.owner:
             return True
+
         if article.group_read:
             if article.group and user.groups.filter(id=article.group.id).exists():
                 return True
-        if article.can_moderate(user):
+            else:
+                return False
+        if article.other_read:
+            return True
+        if user.has_perm('wiki.read'):
             return True
         return False
         
@@ -63,7 +64,7 @@ def can_assign(article, user):
 def can_assign_owner(article, user):
     if callable(settings.CAN_ASSIGN_OWNER):
         return settings.CAN_ASSIGN_OWNER(article, user)
-    return False
+    return not user.is_anonymous() and user.has_perm('wiki.assign')
 
 def can_change_permissions(article, user):
     if callable(settings.CAN_CHANGE_PERMISSIONS):
@@ -78,12 +79,12 @@ def can_change_permissions(article, user):
 def can_delete(article, user):
     if callable(settings.CAN_DELETE):
         return settings.CAN_DELETE(article, user)
-    return not user.is_anonymous() and article.can_write(user)
+    return not user.is_anonymous() and user.has_perm('wiki.admin')
 
 def can_moderate(article, user):
     if callable(settings.CAN_MODERATE):
         return settings.CAN_MODERATE(article, user)
-    return not user.is_anonymous() and user.has_perm('wiki.moderate')
+    return not user.is_anonymous() and user.has_perm('wiki.write')
 
 def can_admin(article, user):
     if callable(settings.CAN_ADMIN):

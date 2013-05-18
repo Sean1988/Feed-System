@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib import admin
 from datetime import datetime
 from uuslug import uuslug
@@ -108,5 +107,10 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+    @property
+    def username(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.email
 
 

@@ -20,7 +20,8 @@ from wiki.editors import getEditor
 from wiki.core.diff import simple_merge
 from django.forms.widgets import HiddenInput
 from wiki.core.plugins.base import PluginSettingsFormMixin
-from django.contrib.auth.models import User
+from account.models import MyUser
+User = MyUser
 from django.contrib.auth.forms import UserCreationForm
 from wiki.core import permissions
 
@@ -302,7 +303,7 @@ class PermissionsForm(PluginSettingsFormMixin, forms.ModelForm):
 
     owner_username = forms.CharField(required=False, label=_(u'Owner'),
                                      help_text=_(u'Enter the username of the owner.'))
-    group = forms.ModelChoiceField(models.Group.objects.all(), empty_label=_(u'(none)'),
+    group = forms.ModelChoiceField(models.Group.objects.all(), empty_label=_(u'(none)',), help_text=_(u'If you choose group , only the people in this group can see this'),
                                      required=False)
     if settings.USE_BOOTSTRAP_SELECT_WIDGET:
         group.widget= SelectWidgetBootstrap()
@@ -367,7 +368,7 @@ class PermissionsForm(PluginSettingsFormMixin, forms.ModelForm):
             username = self.cleaned_data['owner_username']
             if username:
                 try:
-                    user = User.objects.get(username=username)
+                    user = User.objects.get(email=username)
                 except models.User.DoesNotExist:
                     raise forms.ValidationError(_(u'No user with that username'))
             else:
