@@ -9,8 +9,13 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-MANAGERS = ADMINS
+PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
+sys.path.append(PROJECT_PATH)
 
+#-----------------------------------------------------
+#------------Global  variable define------------------
+#-----------------------------------------------------
+MANAGERS = ADMINS
 # Test
 #STRIPE_SECRET = ''
 #STRIPE_PUBLISH = ''
@@ -29,15 +34,35 @@ LINKEDIN_PASS = ''
 APPANNIE_ACCT = ''
 APPANNIE_PASS = ''
 
-PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
+
+# WIKI
+WIKI_ACCOUNT_HANDLING = False
+#
+
+POSTMAN_DISALLOW_ANONYMOUS = True
+POSTMAN_DISALLOW_MULTIRECIPIENTS = True
+POSTMAN_AUTO_MODERATE_AS = None
+POSTMAN_SHOW_USER_AS = "slug"
+POSTMAN_NOTIFIER_APP = None
+
+EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FROM_EMAIL = 'Signl <info@signl.com>'
+
+#SESSION_ENGINE = 'redis_sessions.session'
+#SESSION_REDIS_HOST = 'localhost'
+#SESSION_REDIS_PORT = 6379
+#SESSION_REDIS_DB = 5
+#SESSION_REDIS_PREFIX = 'session'
 
 
-sys.path.append(PROJECT_PATH)
+#-----------------------------------------------------
+#------------DataBase Settings------------------
+#-----------------------------------------------------
 
 #from mongoengine import *
 #connect('blastoff',host='signl.com',port=27017)
 
-
+# Search engine setting
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
@@ -47,17 +72,6 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-# WIKI
-WIKI_ACCOUNT_HANDLING = False
-#
-
-#SESSION_ENGINE = 'redis_sessions.session'
-#SESSION_REDIS_HOST = 'localhost'
-#SESSION_REDIS_PORT = 6379
-#SESSION_REDIS_DB = 5
-#SESSION_REDIS_PREFIX = 'session'
-
-#print PROJECT_PATH 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -71,18 +85,7 @@ DATABASES = {
     }
 }
 
-
-CELERY_TIMEZONE = 'US/Eastern'
-
-POSTMAN_DISALLOW_ANONYMOUS = True
-POSTMAN_DISALLOW_MULTIRECIPIENTS = True
-POSTMAN_AUTO_MODERATE_AS = None
-POSTMAN_SHOW_USER_AS = "slug"
-POSTMAN_NOTIFIER_APP = None
-
-EMAIL_BACKEND = 'django_ses.SESBackend'
-DEFAULT_FROM_EMAIL = 'Signl <info@signl.com>'
-
+#------------------------------------------------
 AUTH_USER_MODEL = 'account.MyUser'
 
 LOGIN_URL = '/accounts/register/'
@@ -191,35 +194,40 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 
 
 INSTALLED_APPS = (
+    # system app
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'django_extensions',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'mptt',
+    
+    # self definded app
     'company',
     'account',
     'web',
     'mobile',
     'linkedin',
+    'feed',
+    'marketing',
+    'ec2',
+    'scheduler',
+
+     #imported app 
+    'mptt',
     'south',
     'djcelery',
     'haystack',
     'postman',
     'django_ses',
     'password_reset',
-    
-    'feed',
-    'marketing',
-    'ec2',
     'raven.contrib.django.raven_compat',
 
+    # for django wiki
     'django.contrib.humanize',
     'django_notify',
     'sekizai',
@@ -229,6 +237,7 @@ INSTALLED_APPS = (
     'wiki.plugins.notifications',
     'wiki.plugins.images',
     'wiki.plugins.macros',
+    'wiki.plugins.links'
     #for wiki
 
 )
@@ -283,17 +292,20 @@ else:
     except NameError:
         pass
 
+# For Celery
 import djcelery
 djcelery.setup_loader()
 BROKER_URL = "sqs://%s:%s@" % (AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
+CELERY_TIMEZONE = 'America/New_York'
 
 from celery.schedules import crontab
 from datetime import timedelta
+CELERY_ROUTES = {'scheduler.tasks.sendMarketingEmail': {'queue': 'scheduler_queue'}}
+
 CELERY_DISABLE_RATE_LIMITS = True
 CELERYBEAT_SCHEDULE = {
-    'add-every-monday-morning': {
-        'task': 'tasks.testTask',
-        'schedule': crontab(),
-        'options':{'queue','scheduler-queue'}
+    'send_marketing_email_daily': {
+        'task': 'scheduler.tasks.sendMarketingEmail',
+        'schedule': crontab(minute= 0,hour=15)
     },
 }

@@ -119,7 +119,6 @@ class LinkedIn:
     def getLinkedinData(self,id):
         url = "http://www.linkedin.com/company/"+ str(id)
         r = self.s.get(url)
-        print r.content
         bf = BeautifulSoup(r.content)
         error = bf.find("div", {"class":"alert error"})
         dataDict = {}
@@ -225,7 +224,7 @@ def grabIP():
 
 from datetime import date
 def getLinkedinEmployee():
-    allcomp = Company.objects.filter(linkedInId__gt = 0, rank__gt=300000,linkedinFetched=False)
+    allcomp = Company.objects.filter(linkedInId__gt = 0, rank__lt=300000,linkedinFetched=False)
     a = LinkedIn()
     for item in allcomp:
         linkedinId = item.linkedInId
@@ -472,12 +471,11 @@ def applyApp(s):
     url = "https://www.linkedin.com/secure/developer"
     re = s.post(url, data=payload)
     bf2 = BeautifulSoup(re.content)
-    print re.content
     #text_file = open("Output4.html", "w")
     #text_file.write(re.content)
     #text_file.close()
     data = bf2.findAll('p')
-    print data
+    
     APIKey = data[3].text
     SecretKey = data[4].text
     UserToken = data[5].text
