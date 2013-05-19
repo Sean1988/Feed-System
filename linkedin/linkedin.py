@@ -119,7 +119,6 @@ class LinkedIn:
     def getLinkedinData(self,id):
         url = "http://www.linkedin.com/company/"+ str(id)
         r = self.s.get(url)
-        print r.content
         bf = BeautifulSoup(r.content)
         error = bf.find("div", {"class":"alert error"})
         dataDict = {}
@@ -170,10 +169,8 @@ class LinkedIn:
         name = comp.name
         searchUrl = "http://www.linkedin.com/csearch/results?type=companies&keywords=%s&pplSearchOrigin=GLHD&pageKey=member-home" % site
         r = self.s.get(searchUrl)
-        #print r.content
         bf = BeautifulSoup(r.content)
         title = bf.find("title")
-        print title.text
         if title.text == "403: Forbidden" or title.text == "Restricted Action | LinkedIn":
             print "forbidden"
             return 2
@@ -472,7 +469,6 @@ def applyApp(s):
     url = "https://www.linkedin.com/secure/developer"
     re = s.post(url, data=payload)
     bf2 = BeautifulSoup(re.content)
-    print re.content
     #text_file = open("Output4.html", "w")
     #text_file.write(re.content)
     #text_file.close()
