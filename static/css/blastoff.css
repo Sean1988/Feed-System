@@ -74,7 +74,14 @@ td img{
   width: 63px;
 }
 
+.navbar-fixed-top .white {
 
+  color:white;
+}
+.navbar-fixed-top .nav>li>a{
+  color:white;
+  font-size: 17px;
+}
 .green>td:nth-child(4){
   color:green;
 }
@@ -130,8 +137,12 @@ td img{
 .twitter-typeahead .tt-query,
 .twitter-typeahead .tt-hint {
   margin-bottom: 0;
+  border-radius: 15px 15px 15px 15px;
 }
 
+.twitter-typeahead #topSearch{
+  background-color: none;
+}
 .tt-dropdown-menu {
   min-width: 160px;
   margin-top: 2px;

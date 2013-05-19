@@ -1,23 +1,20 @@
 <div class="navbar navbar-fixed-top ">
-  <div class="navbar-inner headerBackground" style="opacity: 0.98;background: #f7f7f7;background: url('/static/img/divider-nav.png') repeat-x bottom left;">
-    <div class="container">
+  <div class="navbar-inner headerBackground" style="opacity: 0.98;background: #1797c6;">
+    <div class="container" style="width: 1200px;">
       <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#nav-collapse-01">0
       </button>
     
       <div class="nav-collapse collapse" id="nav-collapse-01">
-        <a href="/" class="brand">Signl Beta</a>
+        <a href="/" class="white brand ">SIGNL Beta</a>
         {% if user.is_authenticated %}
         <ul class="nav pull-left">
-          <li id="msgHeadTab" ><a class="headTabLink" href="/message/inbox/"><img src="{{ STATIC_URL }}img/mailbox.png" style="width: 30px;"style="width: 30px;"></img>{% if postman_unread_count %} <strong>({{ postman_unread_count }})</strong>{% endif %}</a></li>
+          
         </ul>
         {% endif %}
 
         {% if not isSearchPage %}
-
-
-
           <div class="input-append" style="margin-top: 18px;">
-            <input id="topSearch" type="text" class="search-query span3" placeholder="Search Company/Industry">
+            <input id="topSearch" type="text" class="search-query" style="width:300px;" placeholder="Search Company/Industry/Location">
           </div>          
           <button id="topSearchBtn" class="btn">
             <i class="fui-search"></i>
@@ -25,7 +22,7 @@
 
         {%endif%}
 
-        <ul class="nav pull-right">
+        <ul class="nav pull-right" style="margin-top: -3px;">
           {% if user.is_authenticated %}
             {% if user.tag.exists %}
             <li id="homeTab"><a href="/industry/{{user.tag.all.0.slug}}/">Industry</a></li>
@@ -37,7 +34,7 @@
 
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                More <b class="caret"></b>
+                More <b class="caret" style="margin-left: 5px;"></b>
               </a>
               <ul class="dropdown-menu">
                 <li id="contactTab"><a href="/contactUs/">Contact</a></li>
@@ -52,18 +49,19 @@
               
                 {% if user.linkedinId %}
                 <div style="width: 44px; height: 31px;margin-top: -5px;">
-                  <img style="width: 30px; height: 30px;" src="{{ user.icon }}"></img>
+                  <img class="img-rounded" style="width: 32px; height: 32px;" src="{{ user.icon }}"></img>
                 <b class="caret"></b></div>
 
                 {% else %}
-                <div style="width: 56px; height: 31px; margin-top: -5px;">
-                  <img style="width: 30px; height: 30px;" src="{{ STATIC_URL }}img/profileIcon.jpg"></img>
+                <div style="width: 58px; height: 31px; margin-top: -5px;">
+                  <img class="img-rounded" style="width: 32px; height: 32px;" src="{{ STATIC_URL }}img/profileIcon.jpg"></img>
                 <b class="caret pull-right" style="margin-top: 12px;"></b></div>
                 {% endif %}
 
               </a>
               <ul class="dropdown-menu" >
               <li role="presentation"><a href="/accounts/setting/" tabindex="-1" role="menuitem">Settings</a></li>
+              <li role="presentation"><a  href="/message/inbox/">Message {% if postman_unread_count %} <strong>({{ postman_unread_count }})</strong>{% endif %}</a></li>
               <li class="divider" role="presentation"></li>
               <li role="presentation"><a href="/accounts/logout/" tabindex="-1" role="menuitem">Logout</a></li>
               </ul>
