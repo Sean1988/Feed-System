@@ -239,7 +239,7 @@ def feedPage(request):
     
     shuffle(feed_list)
     recommend_tracker = getRecommends(request.user)
-    print feed_list
+    #print feed_list
     locals().update(csrf(request))
     return render(request, 'feed.html', locals())
 
