@@ -73,7 +73,7 @@ class MyUser(AbstractBaseUser,PermissionsMixin):
     idsyAlert = models.BooleanField(default=True)
     momAlert = models.BooleanField(default=True)
     trackSug = models.BooleanField(default=True)
-    feedTotorial= models.BooleanField(default=True) # tutoring for first time using
+    feedTutorial = models.BooleanField(default=True) # tutoring for first time using
 
 
     objects = MyUserManager()
