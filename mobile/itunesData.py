@@ -1,7 +1,6 @@
 import itunes 
 import redis
 import requests
-import simplejson as json
 from BeautifulSoup import BeautifulSoup
 import time
 from datetime import datetime
