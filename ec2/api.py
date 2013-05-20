@@ -4,8 +4,8 @@ import time
 from models import * 
 from datetime import datetime
 
-SINGLE_WORKER = 'ami-aa8feec3'
-TWO_WORKERS = 'ami-6c8eef05'
+SINGLE_WORKER = 'ami-09c7ae60'
+TWO_WORKERS = 'ami-a3c7aeca'
 
 class Ec2(object):
     def __init__(self):
