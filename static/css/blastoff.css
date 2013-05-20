@@ -74,6 +74,13 @@ td img{
   width: 63px;
 }
 
+.feed-tutorial{
+  text-align: center;
+  font-size: 21px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+}
 .navbar-fixed-top .white {
 
   color:white;
