@@ -64,11 +64,11 @@ admin.site.register(AppCategory)
 admin.site.register(IosApp)
 
 
-APP_BOARD = ('paid','free','grossing')
+APP_BOARD = ('download','grossing')
 APP_TYPE = ('iphone','ipad')
 class MobileRank(Document):
-    app_id = IntField(required=True,unique=True)
-    category = StringField( max_length=100)
+    app_id = IntField(required=True)
+    category = StringField( max_length=100, unique_with= 'app_id' )
     type = StringField( max_length=30, choices=APP_TYPE) # iphone or ipad
     board = StringField( max_length=30, choices=APP_BOARD) # paid free grossing
     country = StringField( max_length=100)
@@ -90,5 +90,5 @@ class MobileRank(Document):
         return reach_list
     '''
     meta = {
-        'indexes': ['app_id']
+        'indexes': ['app_id','category']
     }

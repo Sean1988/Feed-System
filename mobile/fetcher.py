@@ -11,8 +11,18 @@ from scheduler.views import releaseAccount
 from ec2.api import * 
 import itunes
 import time
+import pickle  
 DOMAIN = 'http://www.appannie.com'
 
+
+def login():
+    session = requests.Session()
+    payload = { 'username': APPANNIE_ACCT, 'password': APPANNIE_PASS,'next':'/','remember_user':'on'}
+    url = 'https://www.appannie.com/account/login/'
+    r1 = session.post(url, data=payload,verify=False)
+    return session
+
+appAnnieSession = login()
 # for getting history of the app, you must have the earliest date for the data
 @task()
 def getMinDateForAppAnnie(app):
@@ -43,8 +53,9 @@ def getMinDateForAppAnnie(app):
 @task()
 def getBasicDataFromAppAnnie(app):
     time.sleep(1)
-    url = "http://www.appannie.com/app/ios/%s/ranking/history/" % app.trackId
+    url = "http://www.appannie.com%sranking/history/" % app.appAnnieLink
     r = requests.get(url)
+    print url 
     bf = BeautifulSoup(r.content)
     js = bf.findAll('script')
     if r.status_code == 403 :
@@ -72,36 +83,35 @@ def getBasicDataFromAppAnnie(app):
 
 def getIosAppRankData():
     fetcher = IosAppFetcher()
-    app = IosApp.objects.get(id=9413)
-    fetcher.getAppHistoryData(app)
+    apps = IosApp.objects.filter(fetched=False,ratingCount__gt=0,minDate__gt=0)[:10]
+    for app in apps:
+        fetcher.getAppHistoryData(app)
+        app.fetched = True
+        app.save()
+
+
+
 
 class IosAppFetcher:
 
     def __init__(self):
-        self.session = self.login()
-
-    def login(self):
-        session = requests.Session()
-        payload = { 'username': APPANNIE_ACCT, 'password': APPANNIE_PASS,'next':'/','remember_user':'on'}
-        url = 'https://www.appannie.com/account/login/'
-        r1 = session.post(url, data=payload,verify=False)
-        return session
-
+        pass#self.session = self.login()
+        
     def getAppHistoryData(self,app):
+        time.sleep(3)
         refer = DOMAIN+app.appAnnieLink+"ranking/history/"
         #print refer
-        url = refer+"chart_data/?d=iphone&c=143441&f=ranks&s=%s&e=2013-05-15&_c=1" % app.minDate 
+        url = refer+"chart_data/?d=iphone&c=143441&f=ranks&s=%s&e=2013-05-20&_c=1" % app.minDate 
         print url
         headers = {'Referer': refer }
         try:
-            r = self.session.get(url,headers=headers)
+            r = appAnnieSession.get(url,headers=headers)
         except:
             print "error"
             return 
         if r.content == "[]":
             print "find no data"
             return
-
         try:
             response = json.loads(r.content)
         except:
@@ -109,27 +119,23 @@ class IosAppFetcher:
             return 
         
         for item in response:
-            label = getLabelObj(item['label'])
-            
+            label = item['label']
+            print "label = %s id = %s " % (label,app.id)
+            try:
+                mobileRank = MobileRank.objects.get(app_id=app.id,category=label, type='iphone', board='download', country= 'united-states')
+            except:
+                mobileRank = MobileRank.objects.create(app_id=app.id,category=label, type='iphone', board='download', country= 'united-states')
+            dup_set = set([item['date'] for item in mobileRank.ranks ])
             data = item['data']
             if len(data) == 0 : return
             for dayData in data:
                 if dayData[1] == None : continue
-                date = datetime.fromtimestamp(int(dayData[0])/1000).date()
-                print "date = %s rank = %s " % (date,int(dayData[1]))
+                dateInt = int(datetime.fromtimestamp(int(dayData[0])/1000).strftime("%Y%m%d"))
                 note = dayData[2]
-                '''
-                try:
-                    IosAppRank.objects.create(app=app,
-                                              label=label,
-                                              rank=int(dayData[1]),
-                                              date=date,
-                                              type='iphone',
-                                              country='us',
-                                              note=note)
-                except Exception, e:
-                    print "create rank data error %s" % str(e)
-                '''
+                if dateInt not in dup_set:
+                    #print "date = %s rank = %s " % (dateInt,int(dayData[1]))
+                    dayRankData = [int(dayData[1]),note]
+                    mobileRank.ranks.append({'date':dateInt,'data':pickle.dumps(dayRankData)})
             print "save data for %s days" % str(len(data))
 
 # using apple 's official itunes Api > no limit
