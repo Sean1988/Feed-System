@@ -64,7 +64,7 @@ def releaseAllAccounts():
         return False
     else:
         for item in accounts:
-            item.isUser = False
+            item.isUsed = False
             item.save()
         return True
 
