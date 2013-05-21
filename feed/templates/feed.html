@@ -102,7 +102,7 @@ border: none;
       {% if hasIndustry %}
         <div class="row-fluid topfeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
           <div class="span2" style="margin-left: 10px;">
-            <a href="#" style="border:0px"><img src="http://www.signl.com/static/img/def_comp_icon.jpg" class="feed-company-icon"></a>
+            <a href="/company/{{item.slug}}" style="border:0px"><img src="http://www.signl.com/static/img/def_comp_icon.jpg" class="feed-company-icon"></a>
           </div>
           <div class="span9" > 
           <h4 class="feed_headline"><a href="/industry/{{user.tag.all.0.slug}}">Check out the {{user.tag.all.0.tagName}} industry's updated momentum rankings!</a></h4>
@@ -127,7 +127,7 @@ border: none;
           <div class="row-fluid topfeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
 
           <div class="span2" style="margin-left: 10px;">
-            <a href="#" style="border:0px"><img src="http://www.signl.com/static/img/def_comp_icon.jpg" class="img-rounded feed-company-icon"></a>
+            <a href="/company/{{user.comp.slug}}/" style="border:0px"><img src="http://www.signl.com/static/img/def_comp_icon.jpg" class="img-rounded feed-company-icon"></a>
           </div>
 
           <div class="span9" style="padding-bottom: 15px; border-right-width: 0px; padding-right: 25px;"> 
@@ -154,7 +154,7 @@ border: none;
       {% if item|isWebDataFeed   %}
         <div class="row-fluid dataFeed" style="background:white;border: 2px solid #D4D4D4;padding: 15px 0px 2px;margin-top:10px;">
         <div class="span2" style="margin-left: 10px;">
-          <a href="#" style="border:0px">
+          <a href="/company/{{item.0.company.slug}}/" style="border:0px">
         <img src="{{item.0.company.thumb}}" class="img-rounded feed-company-icon">
         </a>
         <h5 style="text-align:center;margin-top:5px;">{{item.0.company.name}}</h5>
