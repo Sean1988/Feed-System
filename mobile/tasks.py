@@ -35,6 +35,7 @@ def markHasApp():
 
 # to get the init date from appannie inorder to get the whole data range for history
 def scanAppAnnieStartDate():
+    releaseAllAccounts()
     c = Ec2()
     c.launchSpotInstance(7,'single_worker')
     appList = IosApp.objects.filter(ratingCount__gt=0, minDate="")
