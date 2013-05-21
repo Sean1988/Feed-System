@@ -3,7 +3,7 @@ from mobile.models import IosApp
 from company.models import Company
 import time
 from ec2.api import * 
-from mobile.itunesData import getAppRatingAndSave,getCompanyApp
+from mobile.itunesData import getCompanyApp
 from mobile.fetcher import getMinDateForAppAnnie
 from scheduler.views import releaseAllAccounts
 @task()
@@ -21,7 +21,7 @@ def updateAppRating():
     c = Ec2()
     c.launchSpotInstance(7,'two_workers')
     appList = IosApp.objects.filter(ratingCount=0)
-    chord( [getAppRatingAndSave.delay(item) for item in appList ])(shutdown.delay(c)).get()
+    #chord( [getAppRatingAndSave.delay(item) for item in appList ])(shutdown.delay(c)).get()
 
 
 # mark app hasApp field 
