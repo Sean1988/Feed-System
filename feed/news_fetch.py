@@ -30,7 +30,10 @@ def fetchNewsFromFaroo(company):
             iurl = item['iurl']
             dateObj = datetime.datetime.fromtimestamp(int(date)/1000)
             #timezone.make_aware(dateObj,CURRENT_TIMEZONE)
-            news = NewsData.objects.create(company=company, title= title,link=link,pub_date=dateObj,description=desc,image=iurl,votes=votes,domain=domain,author=author)
+            news, created= NewsData.objects.get_or_create(company=company, title= title,link=link,pub_date=dateObj,description=desc,domain=domain,author=author)
+            news.image=iurl
+            news.votes=votes
+            news.save()
         except Exception,e:
             print str(e)
         #client.captureException()
