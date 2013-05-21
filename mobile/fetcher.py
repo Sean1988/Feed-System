@@ -4,11 +4,13 @@ from BeautifulSoup import BeautifulSoup
 from signl.utils import *
 from signl.settings import APPANNIE_ACCT, APPANNIE_PASS
 from models import *
-import time
+from celery import task
 from django.db.models import Q
 from celery import task
 from scheduler.views import releaseAccount
 from ec2.api import * 
+import itunes
+import time
 DOMAIN = 'http://www.appannie.com'
 
 # for getting history of the app, you must have the earliest date for the data
@@ -38,40 +40,63 @@ def getMinDateForAppAnnie(app):
     app.minDate = min_date
     app.save()
  
+@task()
+def getBasicDataFromAppAnnie(app):
+    time.sleep(1)
+    url = "http://www.appannie.com/app/ios/%s/ranking/history/" % app.trackId
+    r = requests.get(url)
+    bf = BeautifulSoup(r.content)
+    js = bf.findAll('script')
+    if r.status_code == 403 :
+        sendMsgAlert("get blocked by appannie, starting new instance")
+        #releaseAccount(APPANNIE_ACCT) # relase appannie account
+        #c = Ec2()
+        #c.stopAndBringNewInstance('single_worker') # bring new instance 
+    if len(js) == 0 :
+        print "not getting js"
+        return
+    c = js[3]
+    startPos = c.text.find('app_id')
+    if startPos == -1:
+        print "not find app_id"
+        return
+    try:    
+        app_id = int(c.text[startPos+8:startPos+8+15].split("'")[1])
+    except:
+        print "find app id error for ios app %s " % app.id
+    else:
+        app.trackId = app_id
+        app.save()
+
 
 def getIosAppRankData():
-    s = login()
-    app = IosApp.objects.get(id=24706)
-    getAppHistoryData(s,app)
+    fetcher = IosAppFetcher()
+    app = IosApp.objects.get(id=9413)
+    fetcher.getAppHistoryData(app)
 
 class IosAppFetcher:
 
     def __init__(self):
-        self.s = self.login()
+        self.session = self.login()
 
     def login(self):
-        s = requests.Session()
+        session = requests.Session()
         payload = { 'username': APPANNIE_ACCT, 'password': APPANNIE_PASS,'next':'/','remember_user':'on'}
         url = 'https://www.appannie.com/account/login/'
-        r1 = s.post(url, data=payload,verify=False)
-        return s 
+        r1 = session.post(url, data=payload,verify=False)
+        return session
 
-    def getAppHistoryData(self,s,app):
-        url = app.appAnnieLink
-        refer = DOMAIN+url+"ranking/history/"
+    def getAppHistoryData(self,app):
+        refer = DOMAIN+app.appAnnieLink+"ranking/history/"
         #print refer
-        url = refer+"chart_data/?d=iphone&c=143441&f=ranks&s=2011-11-16&e=2013-04-24&_c=1"
-        print url 
-        url = "http://www.appannie.com/app/ios/477128284/ranking/history/chart_data/?d=iphone&c=143444&f=ranks&s=2013-05-08&e=2013-05-21&_c=1"
+        url = refer+"chart_data/?d=iphone&c=143441&f=ranks&s=%s&e=2013-05-15&_c=1" % app.minDate 
+        print url
         headers = {'Referer': refer }
-        print headers
         try:
-            r = s.get(url,headers=headers)
+            r = self.session.get(url,headers=headers)
         except:
+            print "error"
             return 
-        print "11111"
-        print r.content
-
         if r.content == "[]":
             print "find no data"
             return
@@ -81,15 +106,15 @@ class IosAppFetcher:
         except:
             print "find no data"
             return 
-
+        
         for item in response:
             label = getLabelObj(item['label'])
+            
             data = item['data']
             if len(data) == 0 : return
             for dayData in data:
                 if dayData[1] == None : continue
                 date = datetime.fromtimestamp(int(dayData[0])/1000).date()
-                #print date
                 print "date = %s rank = %s " % (date,int(dayData[1]))
                 note = dayData[2]
                 '''
@@ -105,4 +130,43 @@ class IosAppFetcher:
                     print "create rank data error %s" % str(e)
                 '''
             print "save data for %s days" % str(len(data))
+
+# using apple 's official itunes Api > no limit
+class AppleItunesApi:
+    def __init__(self):
+        pass
+    @task()
+    def getAppBasicData(self,ios):
+        try:
+            app = itunes.lookup(ios.trackId)
+        except:
+            return 
+        else:
+            avgRating = app.get_avg_rating()
+            if avgRating == None: 
+                avgRating = 0
+            ratingNum = app.get_num_ratings()
+            if ratingNum == None:
+                ratingNum = 0
+            if ratingNum != 0 or avgRating != 0:
+                ios.ratingCount = ratingNum
+                ios.avgRating  = avgRating
+                ios.save()
+    @task()
+    def getAppCategory(ios):
+        try:
+            app = itunes.lookup(ios.trackId)
+        except:
+            return 
+        else:
+            avgRating = app.get_avg_rating()
+            if avgRating == None: 
+                avgRating = 0
+            ratingNum = app.get_num_ratings()
+            if ratingNum == None:
+                ratingNum = 0
+            if ratingNum != 0 or avgRating != 0:
+                ios.ratingCount = ratingNum
+                ios.avgRating  = avgRating
+                ios.save()
 

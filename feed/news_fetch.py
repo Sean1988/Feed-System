@@ -8,7 +8,7 @@ import simplejson as json
 import datetime
 from raven import Client
 
-client = Client('http://c659d941ffad4a8eb543e0a5c7751bc9:ef3dcbbc81cf4f1187a5d41fbc601f89@www.cornerstore.me:9000/2')
+#client = Client('http://c659d941ffad4a8eb543e0a5c7751bc9:ef3dcbbc81cf4f1187a5d41fbc601f89@www.cornerstore.me:9000/2')
 def fetchNewsFromFaroo(company):
     url = "http://www.faroo.com/api?q="+company.name+"&start=1&length=10&l=en&src=news&f=json"
     try:
@@ -21,10 +21,13 @@ def fetchNewsFromFaroo(company):
             author=item['author']
             date=item['date']
             link = item['url']
+            votes= int(item['votes'])
+            iurl = item['iurl']
             dateObj = datetime.datetime.fromtimestamp(int(date)/1000)
-            news = NewsData.objects.create(company=company, title= title,link=link,pub_date=dateObj,description=desc,domain=domain,author=author)
+            news = NewsData.objects.create(company=company, title= title,link=link,pub_date=dateObj,description=desc,image=iurl,votes=votes,domain=domain,author=author)
     except Exception,e:
-        client.captureException()
+        print 'error'
+        #client.captureException()
             
 
 def  fetchNewsFromGoogle(company):

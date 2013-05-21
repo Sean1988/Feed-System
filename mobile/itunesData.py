@@ -636,23 +636,6 @@ def findAppFromApple2(iosapp):
                 print str(e)
 
 
-@task()
-def getAppRatingAndSave(ios):
-    try:
-        app = itunes.lookup(ios.trackId)
-    except:
-        return 
-    else:
-        avgRating = app.get_avg_rating()
-        if avgRating == None: 
-            avgRating = 0
-        ratingNum = app.get_num_ratings()
-        if ratingNum == None:
-            ratingNum = 0
-        if ratingNum != 0 or avgRating != 0:
-            ios.ratingCount = ratingNum
-            ios.avgRating  = avgRating
-            ios.save()
 
 def findAppFromApple(name,artist,appAnnieLink,artistLink,country):
 

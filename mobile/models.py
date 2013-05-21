@@ -21,11 +21,14 @@ class IosApp(models.Model):
     country = models.CharField( max_length=50 )
     avgRating = models.FloatField(default=0)
     ratingCount = models.IntegerField( default = 0 )
-
-    minDate = models.CharField( max_length=50 )
- 
     icon = models.URLField()
     link = models.URLField()
+
+
+    minDate = models.CharField( max_length=50 )
+    isGame = models.BooleanField(default=False)
+
+
     
     analysed =  models.BooleanField(default=False)
     fetched =  models.BooleanField(default=False)

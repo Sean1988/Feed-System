@@ -10,8 +10,10 @@ class NewsData(models.Model):
     domain = models.CharField( max_length=120,blank = True, null = True )
     title = models.CharField( max_length=150 ,unique=True ) 
     link =  models.URLField(blank = True, null = True)
+    image = models.URLField(blank = True, null = True)
     media = models.CharField( max_length=100,blank = True, null = True )
     pub_date =  models.DateTimeField()
+    votes = models.IntegerField( blank = True, null = True)
     description = models.TextField(blank = True, null = True )
 
     def __unicode__(self):
