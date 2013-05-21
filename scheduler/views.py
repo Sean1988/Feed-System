@@ -37,16 +37,12 @@ def getNextAccount(request):
     key = request.GET.get('key')
     if key == "missmydata2":
         accounts = CrawlerAccount.objects.filter(type="appannie",isUsed=False)[:1]
-        if not account.exists():
+        if not accounts.exists():
             sendMsgAlert("running out of app annie account")
         else:
-        	account = account[0]
-            fp = open('available_account.py', 'w')
-            fp.write("APPANNIE_ACCT = '%s'\n" % account.accountName)
-            fp.write("APPANNIE_PASS = '%s'" % account.accountPass)
-            fp.close()
+            account = accounts[0]
             account.isUsed = True
             account.save()
-            return respond_as_attachment(request, fp.name, "available_account.py")
+            return HttpResponse("APPANNIE_ACCT = '%s'\nAPPANNIE_PASS = '%s'" % (account.accountName,account.accountPass))
     else:
         return HttpResponse('error')
