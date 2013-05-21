@@ -25,9 +25,9 @@ class Ec2(object):
         self.conn.terminate_instances(self.instances)
     
     def stopAndBringNewInstance(self,instanceType):
-        self.stopCurrentInstance()
         self.launchSpotInstance(1,instanceType)
-
+        self.stopCurrentInstance()
+        
     def stopCurrentInstance(self):
         current_instance_id = self.getCurrentInstanceId()
         self.conn.terminate_instances(instance_ids=[current_instance_id])
