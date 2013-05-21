@@ -9,10 +9,11 @@ import datetime
 from raven import Client
 from django.utils import timezone
 import time
-
+from celery import task
 CURRENT_TIMEZONE  = timezone.get_current_timezone()
 
 #client = Client('http://c659d941ffad4a8eb543e0a5c7751bc9:ef3dcbbc81cf4f1187a5d41fbc601f89@www.cornerstore.me:9000/2')
+@task()
 def fetchNewsFromFaroo(company):
     time.sleep(1)
     url = "http://www.faroo.com/api?q="+company.name+"&start=1&length=10&l=en&src=news&f=json"

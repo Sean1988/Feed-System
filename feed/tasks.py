@@ -17,10 +17,4 @@ def updatNewsDaily():
     c = Ec2()
     c.launchSpotInstance(7,'single_worker')
     companyList = Company.objects.filter(analysed=True)
-    chord( [fetchNewsTask.delay(item) for item in companyList ])(shutdown.delay(c)).get()
-
-@task()
-def fetchNewsTask(company):
-    print company.id
-    fetchNewsFromFaroo(company)
-    time.sleep(1)
+    chord( [fetchNewsFromFaroo.delay(item) for item in companyList ])(shutdown.delay(c)).get()
