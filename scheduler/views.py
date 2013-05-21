@@ -56,8 +56,6 @@ def releaseAccount(accountName):
         account.isUsed = False
         account.save()
         return True
-    else:
-        return False
         
 def releaseAllAccounts():
     try:
@@ -69,6 +67,4 @@ def releaseAllAccounts():
             item.isUser = False
             item.save()
         return True
-    else:
-        return False
 
