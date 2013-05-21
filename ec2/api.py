@@ -5,7 +5,7 @@ from models import *
 from datetime import datetime
 import requests
 
-SINGLE_WORKER = 'ami-09c7ae60'
+SINGLE_WORKER = 'ami-01d7be68'
 TWO_WORKERS = 'ami-a3c7aeca'
 
 class Ec2(object):
