@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib import admin
 # Create your models here.
 
 class CrawlerAccount(models.Model):
@@ -10,4 +10,8 @@ class CrawlerAccount(models.Model):
     isBlocked = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return str(self.accountName)
+        return str(self.accountName) +" "+ str(self.type) 
+
+
+
+admin.site.register(CrawlerAccount)
