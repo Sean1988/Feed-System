@@ -4,5 +4,5 @@ from scheduler.views import *
 urlpatterns = patterns('',
 
     url(r'^getAvailableSettings/', getNextAccount),
-
+    
 )

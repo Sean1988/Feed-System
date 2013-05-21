@@ -7,18 +7,24 @@ from models import *
 import time
 from django.db.models import Q
 from celery import task
+from scheduler.views import releaseAccount
+from ec2.api import * 
 DOMAIN = 'http://www.appannie.com'
-
 
 # for getting history of the app, you must have the earliest date for the data
 @task()
 def getMinDateForAppAnnie(app):
+    time.sleep(1)
     url = "http://www.appannie.com/app/ios/%s/ranking/history/" % app.trackId
     print url
     r = requests.get(url)
     bf = BeautifulSoup(r.content)
     js = bf.findAll('script')
-    
+    if r.status_code == 403 :
+        sendMsgAlert("get blocked by appannie, starting new instance")
+        releaseAccount(APPANNIE_ACCT) # relase appannie account
+        c = Ec2()
+        c.stopAndBringNewInstance('single_worker') # bring new instance 
     if len(js) == 0 :
         print "not getting js"
         return

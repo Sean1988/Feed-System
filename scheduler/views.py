@@ -50,3 +50,29 @@ def getNextAccount(request):
             return respond_as_attachment(request, fp.name, "available_account.py")
     else:
         return HttpResponse('error')
+
+def releaseAccount(accountName):
+    try:
+        account = CrawlerAccount.objects.get(accountName=accountName)
+    except:
+        return False
+    else:
+        account.isUsed = False
+        account.save()
+        return True
+    else:
+        return False
+        
+def releaseAllAccounts():
+    try:
+        accounts = CrawlerAccount.objects.filter(type="appannie")
+    except:
+        return False
+    else:
+        for item in accounts:
+            item.isUser = False
+            item.save()
+        return True
+    else:
+        return False
+

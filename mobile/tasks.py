@@ -5,13 +5,14 @@ import time
 from ec2.api import * 
 from mobile.itunesData import getAppRatingAndSave,getCompanyApp
 from mobile.fetcher import getMinDateForAppAnnie
-
+from scheduler.views import releaseAllAccounts
 @task()
 def shutdown(ec2):
     print "shutting down"
     time.sleep(300)
     ec2.stopAllInstances()
     ec2.cancelAllRequest()
+    releaseAllAccounts()
     print "finised"
     return True
 

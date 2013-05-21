@@ -3,6 +3,7 @@ from signl.settings import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
 import time
 from models import * 
 from datetime import datetime
+import requests
 
 SINGLE_WORKER = 'ami-09c7ae60'
 TWO_WORKERS = 'ami-a3c7aeca'
@@ -18,11 +19,23 @@ class Ec2(object):
         print self.requests
         self.conn.cancel_spot_instance_requests(self.requests)
 
-
     def stopAllInstances(self):
         print "stopping all instances"
         print self.instances
         self.conn.terminate_instances(self.instances)
+    
+    def stopAndBringNewInstance(self,instanceType):
+        self.stopCurrentInstance()
+        self.launchSpotInstance(1,instanceType)
+
+    def stopCurrentInstance(self):
+        current_instance_id = self.getCurrentInstanceId()
+        self.conn.terminate_instances(instance_ids=[current_instance_id])
+
+    def getCurrentInstanceId(self):
+        url ="http://169.254.169.254/latest/meta-data/instance-id"
+        c = requests.get(url)
+        return c.content
 
 
     def saveRequestsAndInstance(self,requests):
