@@ -4,7 +4,7 @@ from company.models import Company
 import time
 from ec2.api import * 
 from mobile.itunesData import getCompanyApp
-from mobile.fetcher import getMinDateForAppAnnie
+from mobile.fetcher import *
 from scheduler.views import releaseAllAccounts
 @task()
 def shutdown(ec2):
@@ -34,6 +34,15 @@ def markHasApp():
             i.save()
 
 # to get the init date from appannie inorder to get the whole data range for history
+def scanAppAnnieTrackId():
+    #releaseAllAccounts()
+    #c = Ec2()
+    #c.launchSpotInstance(7,'single_worker')
+    appList = IosApp.objects.filter( trackId = 0)
+    for item in appList:
+        getBasicDataFromAppAnnie(item)
+    #chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(shutdown.delay(c)).get()
+
 def scanAppAnnieStartDate():
     releaseAllAccounts()
     c = Ec2()

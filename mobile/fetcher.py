@@ -65,6 +65,7 @@ def getBasicDataFromAppAnnie(app):
     except:
         print "find app id error for ios app %s " % app.id
     else:
+        print app_id
         app.trackId = app_id
         app.save()
 
