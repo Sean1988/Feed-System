@@ -7,14 +7,19 @@ from company.models import Company
 import simplejson as json
 import datetime
 from raven import Client
+from django.utils import timezone
+import time
+
+CURRENT_TIMEZONE  = timezone.get_current_timezone()
 
 #client = Client('http://c659d941ffad4a8eb543e0a5c7751bc9:ef3dcbbc81cf4f1187a5d41fbc601f89@www.cornerstore.me:9000/2')
 def fetchNewsFromFaroo(company):
+    time.sleep(1)
     url = "http://www.faroo.com/api?q="+company.name+"&start=1&length=10&l=en&src=news&f=json"
-    try:
-        r = requests.get(url)
-        data = json.loads(r.content)
-        for item in data['results']:
+    r = requests.get(url)
+    data = json.loads(r.content)
+    for item in data['results']:
+        try:
             title = item['title']
             domain = item['domain']
             desc = item['kwic']
@@ -24,9 +29,13 @@ def fetchNewsFromFaroo(company):
             votes= int(item['votes'])
             iurl = item['iurl']
             dateObj = datetime.datetime.fromtimestamp(int(date)/1000)
-            news = NewsData.objects.create(company=company, title= title,link=link,pub_date=dateObj,description=desc,image=iurl,votes=votes,domain=domain,author=author)
-    except Exception,e:
-        print 'error'
+            #timezone.make_aware(dateObj,CURRENT_TIMEZONE)
+            news, created= NewsData.objects.get_or_create(company=company, title= title,link=link,pub_date=dateObj,description=desc,domain=domain,author=author)
+            news.image=iurl
+            news.votes=votes
+            news.save()
+        except Exception,e:
+            print str(e)
         #client.captureException()
             
 
