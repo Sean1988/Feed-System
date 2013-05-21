@@ -90,5 +90,5 @@ class MobileRank(Document):
         return reach_list
     '''
     meta = {
-        'indexes': ['app_id','category']
+        'indexes': ['app_id','category',('app_id','category'),'type','board','country']
     }
