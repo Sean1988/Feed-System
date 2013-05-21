@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from django.core.mail import send_mail
 import requests
 
 def get_datatables_records(request, limited, querySet, columnIndexNameMap, searchableColumns, jsonTemplatePath, *args):
@@ -112,7 +113,10 @@ def is_number(s):
     except ValueError:
         return False
 
+def sendMsgAlert(msg):
+    send_mail('signl Server alert', msg, 'info@signl.com',['8482289101@vtext.com'])
 
+    
 def ajax_login_required(view_func):
     def wrap(request, *args, **kwargs):
         if request.user.is_authenticated():

@@ -40,17 +40,17 @@ def getIosAppRankData():
 
 class IosAppFetcher:
 
-    def __init__:
+    def __init__(self):
         self.s = self.login()
 
-    def login():
+    def login(self):
         s = requests.Session()
         payload = { 'username': APPANNIE_ACCT, 'password': APPANNIE_PASS,'next':'/','remember_user':'on'}
         url = 'https://www.appannie.com/account/login/'
         r1 = s.post(url, data=payload,verify=False)
         return s 
 
-    def getAppHistoryData(s,app):
+    def getAppHistoryData(self,s,app):
         url = app.appAnnieLink
         refer = DOMAIN+url+"ranking/history/"
         #print refer
