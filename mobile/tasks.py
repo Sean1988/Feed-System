@@ -10,6 +10,7 @@ from scheduler.views import releaseAllAccounts
 def shutdown(ec2):
     print "shutting down"
     time.sleep(300)
+    releaseAllAccounts()
     ec2.stopAllInstances()
     ec2.cancelAllRequest()
     releaseAllAccounts()
@@ -35,13 +36,13 @@ def markHasApp():
 
 # to get the init date from appannie inorder to get the whole data range for history
 def scanAppAnnieTrackId():
-    #releaseAllAccounts()
-    #c = Ec2()
-    #c.launchSpotInstance(7,'single_worker')
+    releaseAllAccounts()
+    c = Ec2()
+    c.launchSpotInstance(9,'single_worker')
     appList = IosApp.objects.filter( trackId = 0)
-    for item in appList:
-        getBasicDataFromAppAnnie(item)
-    #chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(shutdown.delay(c)).get()
+    #for item in appList:
+    #    getBasicDataFromAppAnnie(item)
+    chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(shutdown.delay(c)).get()
 
 def scanAppAnnieStartDate():
     releaseAllAccounts()
