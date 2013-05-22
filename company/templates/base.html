@@ -136,9 +136,10 @@ mixpanel.init("2ab68194c0b5825d6e1983964aed96d0");</script><!-- end Mixpanel -->
     });
     
     function search(){
-
+       setTimeout(function(){
        var searchText= $("#topSearch").val();
-       window.location = "/search/?text="+searchText;
+       window.location = "/search/?text="+searchText;   
+       },200)
     }
 
     $('#topSearchBtn').click(function(e){
