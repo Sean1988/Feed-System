@@ -209,11 +209,10 @@ def fetcheAlexaDataAuto(company):
         return 2
     
     historicalData = tree.find('//aws:HistoricalData', namespaces={'aws':'http://awis.amazonaws.com/doc/2005-07-11'})
-    length = len(historicalData)
-    if historicalData ==None or length == 0:
+    if historicalData ==None or len(historicalData) == 0:
         print "get nothing from historicalData from site %s" % company_url
         return 2
-    
+    length = len(historicalData)
     for idx, item in enumerate(historicalData):
         dateText = item.find('.//aws:Date', namespaces={'aws':'http://awis.amazonaws.com/doc/2005-07-11'}).text
         dateInt = int(parser.parse(dateText).strftime("%Y%m%d"))
@@ -229,7 +228,7 @@ def fetcheAlexaDataAuto(company):
         if reach == None : reach = 0
         #check last item is 0 
         if idx == length-1:
-            if int(reach) == 0: 
+            if float(reach) == 0: 
                 continue 
         data = [float(reach),int(rank),float(pv_perMillion),float(pv_perUser)]
         webtraffic.traffic.append({'date':dateInt,'data':pickle.dumps(data)})

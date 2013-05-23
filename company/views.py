@@ -214,7 +214,7 @@ def industryAutocomplete(request):
         suggestions = []
         sgs = SearchQuerySet().models(Tag).autocomplete(content_auto=query,tagType="Industry")[:8]
         for item in sgs:
-            suggestions.append({'value':item.object.tagName,'data':item.object.slug,'type':'industry'})
+            suggestions.append({'value':item.object.tagName,'slug':item.object.slug,'type':'industry'})
         the_data = json.dumps(suggestions)
         return HttpResponse(the_data, content_type='application/json')
 
