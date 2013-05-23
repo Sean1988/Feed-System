@@ -13,7 +13,6 @@ def shutdown(ec2):
     releaseAllAccounts()
     ec2.stopAllInstances()
     ec2.cancelAllRequest()
-    releaseAllAccounts()
     print "finised"
     return True
 
@@ -42,7 +41,7 @@ def scanAppAnnieTrackId():
     appList = IosApp.objects.filter( trackId = 0)
     #for item in appList:
     #    getBasicDataFromAppAnnie(item)
-    chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(shutdown.delay(c)).get()
+    chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(c.shutdownBehavior.delay()).get()
 
 def scanAppAnnieStartDate():
     releaseAllAccounts()

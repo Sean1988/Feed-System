@@ -22,7 +22,7 @@ def login():
     r1 = session.post(url, data=payload,verify=False)
     return session
 
-appAnnieSession = login()
+appAnnieSession = None#login()
 # for getting history of the app, you must have the earliest date for the data
 @task()
 def getMinDateForAppAnnie(app):
@@ -59,7 +59,9 @@ def getBasicDataFromAppAnnie(app):
     bf = BeautifulSoup(r.content)
     js = bf.findAll('script')
     if r.status_code == 403 :
-        sendMsgAlert("get blocked by appannie, starting new instance")
+        print "get blocked "
+        return
+        #sendMsgAlert("get blocked by appannie, starting new instance")
         #releaseAccount(APPANNIE_ACCT) # relase appannie account
         #c = Ec2()
         #c.stopAndBringNewInstance('single_worker') # bring new instance 
@@ -70,6 +72,7 @@ def getBasicDataFromAppAnnie(app):
     startPos = c.text.find('app_id')
     if startPos == -1:
         print "not find app_id"
+        app.delete()
         return
     try:    
         app_id = int(c.text[startPos+8:startPos+8+15].split("'")[1])
