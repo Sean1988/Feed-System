@@ -41,7 +41,7 @@ def scanAppAnnieTrackId():
     appList = IosApp.objects.filter( trackId = 0)
     #for item in appList:
     #    getBasicDataFromAppAnnie(item)
-    chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(c.shutdownBehavior.delay()).get()
+    chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(c.shutdown.delay()).get()
 
 def scanAppAnnieStartDate():
     releaseAllAccounts()

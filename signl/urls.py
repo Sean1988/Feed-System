@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, include, url
 from company.views import * 
 from mobile.views import * 
-from web.views import * 
 from account.views import * 
 from django.conf import settings
 from django.conf.urls.static import static

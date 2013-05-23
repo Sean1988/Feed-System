@@ -1,60 +1,82 @@
 from celery import task,chord
 from company.models import Company
 from web.models import *
-from web.views import * 
-import pickle
+from web.fetcher import *
+from web.feeder import *
+from web.analyser import * 
 from ec2.api import *
+import numpy
 import time
+import pickle
 
-@task()
-def shutdown(ec2):
-    print "shutting down"
-    time.sleep(500)
-    ec2.stopAllInstances()
-    ec2.cancelAllRequest()
-    print "finised"
-    return True
-     
 def reAnalyseAll():
     #c = Ec2()
     #c.launchSpotInstance(7,'two_workers')
+    analyer = WebDataAnalyser()
     companyList = Company.objects.filter(analysed=True)
     for item in companyList:
-        reAnalyse(item)
-    #chord( [ reAnalyse.delay(item)  for item in companyList ])(shutdown.delay(c)).get()
+        analyer.reAnalyse(item)
+    #chord( [ analyer.reAnalyse.delay(item)  for item in companyList ])(c.shutdown.delay())
     
-def transferAll():
-    companyList = Company.objects.all()
-    for item in companyList:
-        print "analysing company %s" % item.id
-        transferAlexa.delay(item)
-    print 'end'
 
 def updateTrafficWeekely():
     c = Ec2()
     c.launchSpotInstance(7,'two_workers')
+    fetcher = WebDataFetcher()
     companyList = Company.objects.filter(analysed=True)
     #for item in companyList:
-    #    fetcheAlexaDataAuto(item)
-    chord( [ fetcheAlexaDataAuto.delay(item)  for item in companyList ])(shutdown.delay(c))
+    #    fetcher.fetcheAlexaDataAuto(item)
+    chord( [ fetcher.fetcheAlexaDataAuto.delay(item)  for item in companyList ])(c.shutdown.delay())
     
 
+def generateReachFeed():
+    feeder = WebFeedGenerator()
+    allComp = Company.objects.filter(analysed = True)
+    for item in allComp:
+        traffic = WebTraffic.objects.get(company_id = item.id).traffic
+        print item.id
+        if len(traffic) > 30:
+            feeder.generateReachFeed(traffic,item)
+
+#===========================================================================
+def replacingWrongWebData():
+    allComp = Company.objects.filter(analysed = True)
+    for comp in allComp:
+        traffic = WebTraffic.objects.get(company_id=comp.id).traffic
+        wrong = []
+        correct = []
+        for item in traffic:
+            if item['date'] >= 20121016 and item['date']<= 20130114:
+                wrong.append(item)
+            else:
+                correct.append(item)
+        wrongData = [pickle.loads(str(i['data']))[0] for i in wrong]
+        correctData = [pickle.loads(str(i['data']))[0] for i in correct]
+        wrongDataAvg = float(numpy.average(wrongData))
+        correctDataAvg =  float(numpy.average(correctData))
+        if correctDataAvg == 0 :
+            continue
+        if wrongDataAvg/correctDataAvg > 10 or wrongDataAvg/correctDataAvg < 0.01 :
+            print "find error company %s and id is %s " % (comp.slug, comp.id)
+            comp.fetched = 520
+            comp.save() 
 
 
 def getMissingAlexaData():
     c = Ec2()
     c.launchSpotInstance(5,'two_workers')
     companyList = Company.objects.filter(analysed=True)
+    fetcher = WebDataFetcher()
     for company  in companyList:
         print company.id
-        webtraffic = WebTraffic.objects.get_or_create(company_id=company.id)[0]
+        webtraffic, created = WebTraffic.objects.get_or_create(company_id=company.id)
         if len(webtraffic.traffic) < 30:
             continue
         else:
             missingMonth = checkMissingMonth(webtraffic.traffic)
             print "find missing date %s for company %s" % (str(missingMonth),company.name)
             for startDay in missingMonth:
-                fetcheMissingAlexaData.delay(company,startDay,webtraffic)
+                fetcher.fetcheMissingAlexaData.delay(company,startDay,webtraffic)
         
 
 
@@ -75,20 +97,15 @@ def checkMissingMonth(traffic):
         missing_startDate.append(20130216)
     return missing_startDate
 
+#===========Transfer Mysql data to MongoDb
+def transferAll():
+    companyList = Company.objects.all()
+    for item in companyList:
+        print "analysing company %s" % item.id
+        transferAlexa.delay(item)
+    print 'end'
 
-@task()
-def reAnalyse(company):
-    print "analyse company %s " % company.id
-    webtraffic = WebTraffic.objects.get(company_id=company.id)
-    if len(webtraffic.traffic) == 0:
-        return False
-    reach = [pickle.loads(str(i['data']))[0] for i in webtraffic.traffic]
-    lastRank = pickle.loads(str(webtraffic.traffic[-1]['data']))[1]
-    if len(reach) < 20:
-        return False
-    else:
-        analyseData(reach,company,lastRank)
-        
+  
 @task()
 def transferAlexa(company):
     c = AlexaData.objects.filter(company=company).order_by('date')

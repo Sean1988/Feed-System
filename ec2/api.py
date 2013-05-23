@@ -18,7 +18,7 @@ class Ec2(object):
         self.ips = []
 
     @task()
-    def shutdownBehavior(self):
+    def shutdown(self):
         time.sleep(300)
         releaseAllAccounts()
         self.stopAllInstances()
