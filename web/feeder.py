@@ -12,7 +12,7 @@ IS_SPIKE_RATE = 0.3 # threshold for how much point in data is 0 to be consider a
 FEED_GENERATE_DOOR = 5 # threshold for the change rate to be consider as useful data feed 
 
 
-class WebFeedGenerator:
+class WebFeedGenerator(object):
 
     def __init__(self):
         pass

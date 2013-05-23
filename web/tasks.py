@@ -13,7 +13,7 @@ def reAnalyseAll():
     #c = Ec2()
     #c.launchSpotInstance(7,'two_workers')
     analyer = WebDataAnalyser()
-    companyList = Company.objects.filter(analysed=True)
+    companyList = Company.objects.filter(analysed=True)[0:100]
     for item in companyList:
         analyer.reAnalyse(item)
     #chord( [ analyer.reAnalyse.delay(item)  for item in companyList ])(c.shutdown.delay())

@@ -1,6 +1,6 @@
 
 from web.models import * 
-from celery import task
+from celery.contrib.methods import task
 from company.mathLogic import *
 from company.models import *
 from signl.utils import * 
@@ -15,7 +15,7 @@ def removeBadCompany():
             print item.name + "--- "+ item.website
             item.delete()
 
-class WebDataAnalyser:
+class WebDataAnalyser(object):
     def __init__(self):
         pass
 

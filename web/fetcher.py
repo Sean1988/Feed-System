@@ -3,13 +3,13 @@ from signl.settings import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY
 from datetime import date,timedelta,datetime
 from signl.utils import * 
 from web.models import * 
-from celery import task
+from celery.contrib.methods import task
 from awis import * 
 from dateutil import parser
 import pickle 
 
 AWIS_NAMESPACE = {'aws':'http://awis.amazonaws.com/doc/2005-07-11'}
-class WebDataFetcher:
+class WebDataFetcher(object):
 
     def __init__(self):
         pass#self.session = self.login()

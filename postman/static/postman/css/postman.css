@@ -24,7 +24,7 @@
 }
 
 .bs-docs-sidenav.affix {
-    top: 40px;
+    padding-left: 30px;
 }
 .bs-docs-sidenav {
     width: 258px;
