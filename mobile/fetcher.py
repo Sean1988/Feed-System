@@ -72,6 +72,7 @@ def getBasicDataFromAppAnnie(app):
     startPos = c.text.find('app_id')
     if startPos == -1:
         print "not find app_id"
+        app.delete()
         return
     try:    
         app_id = int(c.text[startPos+8:startPos+8+15].split("'")[1])
