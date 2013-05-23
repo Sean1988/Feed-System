@@ -23,7 +23,13 @@ class Ec2(object):
         releaseAllAccounts()
         self.stopAllInstances()
         self.cancelAllRequest()
+        self.releaseAllIPs()
 
+    def releaseAllIPs(self):
+        for item in self.ips:
+            item.disassociate()
+        for item in self.ips:
+            item.release()
 
     def cancelAllRequest(self):
         print "stop all requests"
@@ -35,8 +41,8 @@ class Ec2(object):
         print self.instances
         self.conn.terminate_instances(self.instances)
     
-    def stopAndBringNewInstance(self,instanceType):
-        self.launchSpotInstance(1,instanceType)
+    def stopAndBringNewInstance(self,instanceType,needEIP):
+        self.launchSpotInstance(1,instanceType,needEIP)
         self.stopCurrentInstance()
         
     def stopCurrentInstance(self):
@@ -58,7 +64,7 @@ class Ec2(object):
             new_address = self.conn.allocate_address()
             self.ips.append(new_address)
             new_address.associate(item)
-            time.sleep(60)
+            #time.sleep(3)
 
     def _isAllRequestReady(self,requests):
         for item in requests:

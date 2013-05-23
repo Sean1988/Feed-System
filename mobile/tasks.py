@@ -38,7 +38,7 @@ def scanAppAnnieTrackId():
     releaseAllAccounts()
     c = Ec2()
     c.launchSpotInstance(9,'single_worker')
-    appList = IosApp.objects.filter( trackId = 0)
+    appList = IosApp.objects.filter(trackId = 0)
     #for item in appList:
     #    getBasicDataFromAppAnnie(item)
     chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(c.shutdown.delay()).get()

@@ -36,7 +36,7 @@ def getMinDateForAppAnnie(app):
         sendMsgAlert("get blocked by appannie, starting new instance")
         releaseAccount(APPANNIE_ACCT) # relase appannie account
         c = Ec2()
-        c.stopAndBringNewInstance('single_worker') # bring new instance 
+        c.stopAndBringNewInstance('single_worker',needEIP=True) # bring new instance 
     if len(js) == 0 :
         print "not getting js"
         return
@@ -64,7 +64,7 @@ def getBasicDataFromAppAnnie(app):
         #sendMsgAlert("get blocked by appannie, starting new instance")
         #releaseAccount(APPANNIE_ACCT) # relase appannie account
         #c = Ec2()
-        #c.stopAndBringNewInstance('single_worker') # bring new instance 
+        #c.stopAndBringNewInstance('single_worker',needEIP=True) # bring new instance 
     if len(js) == 0 :
         print "not getting js"
         return
