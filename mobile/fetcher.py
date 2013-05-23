@@ -52,7 +52,7 @@ def getMinDateForAppAnnie(app):
  
 @task()
 def getBasicDataFromAppAnnie(app):
-    time.sleep(1)
+    time.sleep(2)
     url = "http://www.appannie.com%sranking/history/" % app.appAnnieLink
     r = requests.get(url)
     print url 
@@ -60,11 +60,10 @@ def getBasicDataFromAppAnnie(app):
     js = bf.findAll('script')
     if r.status_code == 403 :
         print "get blocked "
-        return
-        #sendMsgAlert("get blocked by appannie, starting new instance")
-        #releaseAccount(APPANNIE_ACCT) # relase appannie account
-        #c = Ec2()
-        #c.stopAndBringNewInstance('single_worker',needEIP=True) # bring new instance 
+        sendMsgAlert("get blocked by appannie, starting new instance")
+        releaseAccount(APPANNIE_ACCT) # relase appannie account
+        c = Ec2()
+        c.stopAndBringNewInstance('single_worker',needEIP=True) # bring new instance 
     if len(js) == 0 :
         print "not getting js"
         return

@@ -37,16 +37,16 @@ def markHasApp():
 def scanAppAnnieTrackId():
     releaseAllAccounts()
     c = Ec2()
-    c.launchSpotInstance(9,'single_worker')
+    c.launchSpotInstance(6,'single_worker',True)
     appList = IosApp.objects.filter(trackId = 0)
     #for item in appList:
     #    getBasicDataFromAppAnnie(item)
-    chord( [getMinDateForAppAnnie.delay(item) for item in appList ])(c.shutdown.delay()).get()
+    chord( [getBasicDataFromAppAnnie.delay(item) for item in appList ])(c.shutdown.delay()).get()
 
 def scanAppAnnieStartDate():
     releaseAllAccounts()
     c = Ec2()
-    c.launchSpotInstance(7,'single_worker')
+    c.launchSpotInstance(7,'single_worker',True)
     appList = IosApp.objects.filter(ratingCount__gt=0, minDate="")
     #for item in appList:
     #    getMinDateForAppAnnie(item)
