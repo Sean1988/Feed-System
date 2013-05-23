@@ -56,7 +56,6 @@ def generateDataImg():
 def getFeaturedDataFeed():
     trending = Company.objects.filter(thumb__isnull=False,rank__lt=100000,companyId__gt=0,cbpermalink__isnull=False).order_by('-smooth')
 
-
 def selectFeedFromCompAndTag(user):
     dataFeedList = []
     newsFeedList = []
@@ -69,7 +68,6 @@ def selectFeedFromCompAndTag(user):
             dataFeedList.append(compDataFeed[0])
         if compNewsFeed:
             newsFeedList.append(compNewsFeed[0])
-
     if user.tracker.exists():
         for item in user.tracker.all():
             newsTracker = list(NewsData.objects.filter(company=item).order_by('-pub_date')[:1])
@@ -77,7 +75,7 @@ def selectFeedFromCompAndTag(user):
             if newsTracker:
                 newsFeedList.append(newsTracker[0])
             if dataFeedTacker:
-                dataFeedList.append(dataFeedTacker[0])    
+                dataFeedList.append(dataFeedTacker[0]) 
     if len(newsFeedList) < 4:
         if hasIndustry :
             newsFeedList += getIndustryNewsFeed(user.tag.all()[0])
@@ -101,7 +99,7 @@ def selectFeedFromCompAndTag(user):
     return feed_list
 
 
-def getDefaultDataFeed():
+def getDefaultNewsFeed():
     return list(NewsData.objects.all().order_by('-pub_date')[:4])
 
 def getDefaultDataFeed():
@@ -119,20 +117,23 @@ def getIndustryNewsFeed(industry):
     return news_list[:4]
 
 def getIndustryDataFeed(industry):
-    comps = Company.objects.filter(tags=industry).order_by('-smooth')[:10]
+    comps = Company.objects.filter(tags=industry).order_by('rank')[:10]
     datafeed_list = []
     for item in comps:
         if len(datafeed_list) >= 2:
             break
-        datafeed_list += list(DataFeed.objects.filter(company=item).order_by('-percent'))
+        newFeed = list(DataFeed.objects.filter(company=item).order_by('-percent'))
+        if len(newFeed) > 0:
+            datafeed_list.append(newFeed[0])
+
 
     if len(datafeed_list) < 2:
-        datafeed_list += list(DataFeed.objects.all().order_by('-percent')[:2])
+        datafeed_list += list(DataFeed.objects.all().order_by('-percent')[:10])
     return datafeed_list[:2]
 
 def getDefaultFeed():
     feed_list = []
-    trending = Company.objects.filter(thumb__isnull=False,rank__lt=100000,companyId__gt=0,cbpermalink__isnull=False).order_by('-smooth')
+    trending = Company.objects.filter(thumb__isnull=False,rank__lt=100000,companyId__gt=0,cbpermalink__isnull=False).order_by('rank')
     for item in trending[0:8]:
         result = getFeedForCompany(item)
         feed_list+=result

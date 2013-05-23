@@ -14,6 +14,7 @@ import pickle
 from dateutil import parser
 import requests
 from feed.feedImg import generateImgForWebFeed
+
 def generateDataImg():
     allComp = Company.objects.filter(analysed = True)
     for comp in allComp[0:10]:
@@ -33,13 +34,6 @@ def generateDataImg():
             with open('/Users/wenzhixue/change/blastoff/images/%s.png'%comp.id , 'wb') as f:
                 for chunk in r.iter_content(1024):
                     f.write(chunk)
-
-def temp4():
-    wrong  = Company.objects.filter(fetched=520)
-    for item in wrong:
-        replaceWrongAlexaData(item,20121016)
-        replaceWrongAlexaData(item,20121116)
-        replaceWrongAlexaData(item,20121216)
 
 import numpy
 def temp3():
@@ -70,7 +64,6 @@ def temp2():
         traffic = WebTraffic.objects.get(company_id = item.id).traffic
         print item.id
         if len(traffic) > 30:
-            #generateRankFeed(traffic,item)
             generateReachFeed(traffic,item)
 
 #==================Fetch Alexa Data using AWIS API !=========================================    

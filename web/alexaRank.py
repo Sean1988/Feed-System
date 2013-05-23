@@ -62,8 +62,6 @@ def readCSV(name,today):
     siteCache.save()
     ifile.close()
 
-def addAlexaWebsiteToDB(url):
-    pass
 
 def saveNewTopSite():
     allCompany= Company.objects.all()

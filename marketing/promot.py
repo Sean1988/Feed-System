@@ -1,7 +1,6 @@
 from company.models import * 
 from django.db.models import Q
 from account.models import *
-
 from django.template.loader import render_to_string
 from marketing.tasks import send_simple_message
 from feed.views import * 
@@ -15,10 +14,10 @@ SIGNL_INFO = "Signl <info@signl.com>"
 SIGNL_MARKETING = "Signl <nick@signl.com>"
 
 
-
 def send_digest():
     allUsers = MyUser.objects.filter(is_company=False)
     for user in allUsers:
+        print user.email
         send_weekly_digest(user)  
 
 def send_weekly_digest(user):
@@ -27,7 +26,8 @@ def send_weekly_digest(user):
     receiver = user.email
 
     if not user.comp and not user.tracker.exists():
-        feed_list = getDefaultFeed()
+        myUser = MyUser.objects.get(email='wenzhixue@gmail.com')
+        feed_list = selectFeedFromCompAndTag(myUser)
     else:
         feed_list = selectFeedFromCompAndTag(user)
     feed_list=feed_list[:6]

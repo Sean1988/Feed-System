@@ -82,7 +82,7 @@ def getBasicDataFromAppAnnie(app):
 
 
 def getIosAppRankData():
-    fetcher = IosAppFetcher()
+    fetcher = IosAppDataFetcher()
     apps = IosApp.objects.filter(fetched=False,ratingCount__gt=0,minDate__gt=0)[:10]
     for app in apps:
         fetcher.getAppHistoryData(app)
@@ -92,7 +92,7 @@ def getIosAppRankData():
 
 
 
-class IosAppFetcher:
+class IosAppDataFetcher:
 
     def __init__(self):
         pass#self.session = self.login()
