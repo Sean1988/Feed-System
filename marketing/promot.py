@@ -66,7 +66,7 @@ from django.db.models import Q
 def sendPromotEmail():
     cot = 0
     sender = SIGNL_MARKETING
-    allComps = Company.objects.filter(Q(email__isnull=False),~Q(email=""),Q(rank__lt=100000),Q(emailSent = False))
+    allComps = Company.objects.filter(Q(email__isnull=False),~Q(email=""),Q(emailSent = False))
     for item in allComps:
         if item.defaultTag != None:
             url = "http://www.signl.com/ranking/?comp=%s" % item.slug
