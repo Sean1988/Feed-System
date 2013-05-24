@@ -52,7 +52,7 @@ def getMinDateForAppAnnie(app):
  
 @task()
 def getBasicDataFromAppAnnie(app):
-    time.sleep(2)
+    time.sleep(3)
     url = "http://www.appannie.com%sranking/history/" % app.appAnnieLink
     r = requests.get(url)
     print url 
@@ -63,7 +63,8 @@ def getBasicDataFromAppAnnie(app):
         sendMsgAlert("get blocked by appannie, starting new instance")
         releaseAccount(APPANNIE_ACCT) # relase appannie account
         c = Ec2()
-        c.stopAndBringNewInstance('single_worker',needEIP=True) # bring new instance 
+        c.stopCurrentInstance()
+        #c.stopAndBringNewInstance('single_worker',needEIP=True) # bring new instance 
     if len(js) == 0 :
         print "not getting js"
         return
