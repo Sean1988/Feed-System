@@ -83,20 +83,12 @@ def getBasicDataFromAppAnnie(app):
         app.save()
 
 
-def getIosAppRankData():
-    fetcher = IosAppDataFetcher()
-    apps = IosApp.objects.filter(fetched=False,ratingCount__gt=0,minDate__gt=0)[:10]
-    for app in apps:
-        fetcher.getAppHistoryData(app)
-        app.fetched = True
-        app.save()
-
 @task()
 def getAppHistoryData(app):
     time.sleep(10)
     refer = DOMAIN+app.appAnnieLink+"ranking/history/"
     #print refer
-    url = refer+"chart_data/?d=iphone&c=143441&f=ranks&s=%s&e=2013-05-20&_c=1" % app.minDate 
+    url = refer+"chart_data/?d=iphone&c=143441&f=ranks&s=%s&e=2013-05-24&_c=1" % app.minDate 
     print url
     headers = {'Referer': refer }
     try:

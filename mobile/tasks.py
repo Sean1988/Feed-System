@@ -23,16 +23,23 @@ def markHasApp():
             i.hasApp = True
             i.save()
 
+def getIosAppRankData():
+    fetcher = IosAppDataFetcher()
+    apps = IosApp.objects.filter(fetched=False,ratingCount__gt=0,minDate__gt=0)[:10]
+    for app in apps:
+        fetcher.getAppHistoryData(app)
+        app.fetched = True
+        app.save()
+
 def CrawlerAppHistoryHistory():
-    count = 0
     allComp = Company.objects.filter(analysed=True)
     for comp in allComp:
-        apps = IosApp.objects.filter(Q(company=comp),~Q(ratingCount=0),~Q(primaryGenreName="Games"))
+        apps = IosApp.objects.filter(Q(company=comp),~Q(ratingCount=0),~Q(primaryGenreName="Games")).order_by('-ratingCount')
         if apps.exists():
-            count +=1
-    print count 
-
-
+            firstApp = apps[0]
+            firstApp.analysed = True
+            firstApp.save()
+            
 def scanAppBasicDataFromApple():
     releaseAllAccounts()
     c = Ec2()
