@@ -6,23 +6,13 @@ from ec2.api import *
 from mobile.itunesData import getCompanyApp
 from mobile.fetcher import *
 from scheduler.views import releaseAllAccounts
-@task()
-def shutdown(ec2):
-    print "shutting down"
-    time.sleep(300)
-    releaseAllAccounts()
-    ec2.stopAllInstances()
-    ec2.cancelAllRequest()
-    print "finised"
-    return True
-
+from django.db.models import Q
 # this task is to get the app rating and rating count for app.    
 def updateAppRating():
     c = Ec2()
     c.launchSpotInstance(7,'two_workers')
     appList = IosApp.objects.filter(ratingCount=0)
     #chord( [getAppRatingAndSave.delay(item) for item in appList ])(shutdown.delay(c)).get()
-
 
 # mark app hasApp field 
 def markHasApp():
@@ -33,12 +23,36 @@ def markHasApp():
             i.hasApp = True
             i.save()
 
+def getIosAppRankData():
+    fetcher = IosAppDataFetcher()
+    apps = IosApp.objects.filter(fetched=False,ratingCount__gt=0,minDate__gt=0)[:10]
+    for app in apps:
+        fetcher.getAppHistoryData(app)
+        app.fetched = True
+        app.save()
+
+def CrawlerAppHistoryHistory():
+    allComp = Company.objects.filter(analysed=True)
+    for comp in allComp:
+        apps = IosApp.objects.filter(Q(company=comp),~Q(ratingCount=0),~Q(primaryGenreName="Games")).order_by('-ratingCount')
+        if apps.exists():
+            firstApp = apps[0]
+            firstApp.analysed = True
+            firstApp.save()
+            
+def scanAppBasicDataFromApple():
+    releaseAllAccounts()
+    c = Ec2()
+    c.launchSpotInstance(6,'single_worker')
+    appList = IosApp.objects.filter(primaryGenreName="",trackId__gt=0)
+    chord( [getAppBasicData.delay(item) for item in appList ])(c.shutdown.delay()).get()
+
 # to get the init date from appannie inorder to get the whole data range for history
 def scanAppAnnieTrackId():
     releaseAllAccounts()
     c = Ec2()
-    c.launchSpotInstance(6,'single_worker',True)
-    appList = IosApp.objects.filter(trackId = 0)
+    c.launchSpotInstance(3,'single_worker',True)
+    appList = IosApp.objects.filter(trackId__lt=0)
     #for item in appList:
     #    getBasicDataFromAppAnnie(item)
     chord( [getBasicDataFromAppAnnie.delay(item) for item in appList ])(c.shutdown.delay()).get()
