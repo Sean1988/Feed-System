@@ -21,7 +21,7 @@ def login():
     r1 = session.post(url, data=payload,verify=False)
     return session
 
-appAnnieSession = None#login()
+appAnnieSession = login()
 # for getting history of the app, you must have the earliest date for the data
 @task()
 def getMinDateForAppAnnie(app):
@@ -123,8 +123,10 @@ def getAppHistoryData(app):
                 #print "date = %s rank = %s " % (dateInt,int(dayData[1]))
                 dayRankData = [int(dayData[1]),note]
                 mobileRank.ranks.append({'date':dateInt,'data':pickle.dumps(dayRankData)})
+        mobileRank.save()
         print "save data for %s days" % str(len(data))
-
+    app.fetched=True
+    app.save()
 # using apple 's official itunes Api > no limit
 @task()
 def getAppBasicData(app):

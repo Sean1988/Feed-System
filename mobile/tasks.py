@@ -31,7 +31,7 @@ def getIosAppRankData():
         app.fetched = True
         app.save()
 
-def CrawlerAppHistoryHistory():
+def markFirstAppInCompany():
     allComp = Company.objects.filter(analysed=True)
     for comp in allComp:
         apps = IosApp.objects.filter(Q(company=comp),~Q(ratingCount=0),~Q(primaryGenreName="Games")).order_by('-ratingCount')
@@ -40,6 +40,11 @@ def CrawlerAppHistoryHistory():
             firstApp.analysed = True
             firstApp.save()
             
+def scanAppHistoryFromAnnie():
+    appList = IosApp.objects.filter(analysed = True, fetched = False)
+    for app in appList:
+        getAppHistoryData(app)
+
 def scanAppBasicDataFromApple():
     releaseAllAccounts()
     c = Ec2()
