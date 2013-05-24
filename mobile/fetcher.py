@@ -116,12 +116,16 @@ def getAppHistoryData(app):
         data = item['data']
         if len(data) == 0 : return
         for dayData in data:
-            if dayData[1] == None : continue
+            rank = dayData[1]
+            #if dayData[1] == None : continue
             dateInt = int(datetime.fromtimestamp(int(dayData[0])/1000).strftime("%Y%m%d"))
             note = dayData[2]
             if dateInt not in dup_set:
                 #print "date = %s rank = %s " % (dateInt,int(dayData[1]))
-                dayRankData = [int(dayData[1]),note]
+                if rank  == None :
+                    dayRankData = [None,note]
+                else:
+                    dayRankData = [int(rank),note]
                 mobileRank.ranks.append({'date':dateInt,'data':pickle.dumps(dayRankData)})
         mobileRank.save()
         print "save data for %s days" % str(len(data))
