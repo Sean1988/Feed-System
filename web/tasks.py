@@ -1,4 +1,5 @@
 from celery import task,chord
+from celery import chain
 from company.models import Company
 from web.models import *
 from web.fetcher import *
@@ -9,6 +10,20 @@ import numpy
 import time
 import pickle
 
+
+@task()
+def test1():
+    print "test1"
+@task()
+def test2():
+    print "test2"
+@task()
+def test3():
+    print "test3"
+
+def do():
+    chain(test1.s(), test2.s(), test3.s()).apply_async()
+
 def reAnalyseAll():
     #c = Ec2()
     #c.launchSpotInstance(7,'two_workers')
@@ -18,7 +33,6 @@ def reAnalyseAll():
         analyer.reAnalyse(item)
     #chord( [ analyer.reAnalyse.delay(item)  for item in companyList ])(c.shutdown.delay())
     
-
 def updateTrafficWeekely():
     c = Ec2()
     c.launchSpotInstance(7,'two_workers')
@@ -29,7 +43,7 @@ def updateTrafficWeekely():
     chord( [ fetcher.fetcheAlexaDataAuto.delay(item)  for item in companyList ])(c.shutdown.delay())
     
 
-def generateReachFeed():
+def generateReachFeedTask():
     feeder = WebFeedGenerator()
     allComp = Company.objects.filter(analysed = True)
     for item in allComp:
