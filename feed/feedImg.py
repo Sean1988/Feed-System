@@ -19,6 +19,7 @@ def dataPadToString(traffic,feedType):
     return str(data).replace(' ','').replace('[','').replace(']','')
                  
 def generateImgForWebFeed(webFeed,traffic):
+    print "generateImgForWebFeed"
     conn = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
     bucket = conn.create_bucket('datafeed-image')
     feedType = webFeed.type
@@ -46,6 +47,7 @@ def generateImgForWebFeed(webFeed,traffic):
 
 
 def writeToLocal(url,fileName):
+    print "uploading to S3"
     fileDir = '/home/ubuntu/signl/static/img/datafeed/%s' % fileName
     r = requests.get(url)
     if r.status_code == 200:

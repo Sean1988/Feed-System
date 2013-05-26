@@ -20,12 +20,16 @@ def webDataProcessor():
 @task()
 def webBundleTask(company):
     fetcher = WebDataFetcher()
+    print "getting alexa data"
     newWebTraffic = fetcher.fetcheAlexaDataAuto(company)
     if newWebTraffic == None:
+        print "no data found "
         return False
     feeder = WebFeedGenerator()
+    print "generate feed image"
     feeder.generateReachFeed(newWebTraffic.traffic,company)
     analyer = WebDataAnalyser()
+    print "re-analyse company"
     analyer.reAnalyse(company)
 
 
