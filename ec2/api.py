@@ -8,7 +8,7 @@ from celery import task
 from scheduler.views import releaseAllAccounts
 
 SINGLE_WORKER = 'ami-d3701bba'
-TWO_WORKERS = 'ami-d3761dba'
+TWO_WORKERS = 'ami-3b5d3652'
 
 class Ec2(object):
     def __init__(self):
@@ -16,6 +16,7 @@ class Ec2(object):
         self.requests = []
         self.instances = []
         self.ips = []
+        releaseAllAccounts()
 
     @task()
     def shutdown(self):
