@@ -222,7 +222,7 @@ def grabIP():
 
 from datetime import date
 def getLinkedinEmployee():
-    allcomp = Company.objects.filter(linkedInId__gt = 0, rank__lt=300000,linkedinFetched=False)
+    allcomp = Company.objects.filter(linkedInId__gt = 0, rank__gt=300000,linkedinFetched=False)
     a = LinkedIn()
     for item in allcomp:
         linkedinId = item.linkedInId

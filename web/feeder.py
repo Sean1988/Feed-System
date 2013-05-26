@@ -1,4 +1,5 @@
 from feed.models import * 
+import pickle
 from feed.feedImg import generateImgForWebFeed
 ONE_WEEK_DAY = 7
 TWO_WEEKS_DAY = 14

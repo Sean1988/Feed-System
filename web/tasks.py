@@ -12,10 +12,13 @@ import pickle
 
 
 def webDataProcessor():
-    c = Ec2()
-    c.launchSpotInstance(7,'two_workers')
+    #c = Ec2()
+    #c.launchSpotInstance(7,'two_workers')
     companyList = Company.objects.filter(analysed=True)
-    chord( [ webBundleTask.delay(item)  for item in companyList ])(c.shutdown.delay())
+    for company in companyList:
+        print company.id
+        webBundleTask(company)
+    #chord( [ webBundleTask.delay(item)  for item in companyList ])(c.shutdown.delay())
     
 @task()
 def webBundleTask(company):

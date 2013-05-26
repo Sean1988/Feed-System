@@ -18,9 +18,9 @@ class WebDataFetcher(object):
         if len(traffic) == 0 :
             return (date.today()-timedelta(days=31)).strftime("%Y%m%d"), 31
         else:
-            last_day = datetime.strptime(str(traffic[-1]['date']),'%Y%m%d')
+            last_day = datetime.datetime.strptime(str(traffic[-1]['date']),'%Y%m%d')
             print "last day is %s " % last_day
-            distance = (datetime.today() - last_day).days
+            distance = (datetime.datetime.today() - last_day).days
             return (last_day+timedelta(days=1)).strftime("%Y%m%d"),distance
 
     @task()
