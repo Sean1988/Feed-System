@@ -7,8 +7,8 @@ import requests
 from celery import task
 from scheduler.views import releaseAllAccounts
 
-SINGLE_WORKER = 'ami-01d7be68'
-TWO_WORKERS = 'ami-a3c7aeca'
+SINGLE_WORKER = 'ami-d3701bba'
+TWO_WORKERS = 'ami-d3761dba'
 
 class Ec2(object):
     def __init__(self):

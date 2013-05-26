@@ -32,18 +32,18 @@ class WebDataFetcher(object):
 
 	    if distance <= 5:
 	        print "already get data today"
-	        return
+	        return None
 	    try:    
 	        api = AwisApi(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 	        tree = api.traffic_history(company_url, distance, startDay, "History")
 	    except Exception,e:
 	        print str(e)
-	        return
+	        return None
 	    
 	    historicalData = tree.find('//aws:HistoricalData', namespaces=AWIS_NAMESPACE)
 	    if historicalData ==None or len(historicalData) == 0:
 	        print "get nothing from historicalData from site %s" % company_url
-	        return 
+	        return None
 	    length = len(historicalData)
 	    for idx, item in enumerate(historicalData):
 	        dateText = item.find('.//aws:Date', namespaces=AWIS_NAMESPACE).text
@@ -67,7 +67,9 @@ class WebDataFetcher(object):
 	        webtraffic.save()
 	    except Exception,e:
 	        print str(e)
+	        return None
 	    print "!!!!!!successfuly save date for site %s about %s for month %s" % (company.website,str(distance),str(startDay))
+	    return webtraffic
 
     # some company's alexa data is wrong for serveral months
 	@task()

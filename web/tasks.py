@@ -11,18 +11,23 @@ import time
 import pickle
 
 
+def webDataProcessor():
+    c = Ec2()
+    c.launchSpotInstance(7,'two_workers')
+    companyList = Company.objects.filter(analysed=True)
+    chord( [ webBundleTask.delay(item)  for item in companyList ])(c.shutdown.delay())
+    
 @task()
-def test1():
-    print "test1"
-@task()
-def test2():
-    print "test2"
-@task()
-def test3():
-    print "test3"
+def webBundleTask(company):
+    fetcher = WebDataFetcher()
+    newWebTraffic = fetcher.fetcheAlexaDataAuto(company)
+    if newWebTraffic == None:
+        return False
+    feeder = WebFeedGenerator()
+    feeder.generateReachFeed(newWebTraffic.traffic,company)
+    analyer = WebDataAnalyser()
+    analyer.reAnalyse(company)
 
-def do():
-    chain(test1.s(), test2.s(), test3.s()).apply_async()
 
 def reAnalyseAll():
     #c = Ec2()
