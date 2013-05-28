@@ -3,11 +3,9 @@ from account.views import *
 from account.ajax import * 
 urlpatterns = patterns('',
 
-    url(r'^doLogin/', doLogin),
-    url(r'^logout/', doLogout),
-    url(r'^login/', loginPage),
-    url(r'^doRegister/', doRegister),
-    url(r'^register/', register),
+    url(r'^logout/', logoutAction),
+    url(r'^login/', loginAction),
+    url(r'^register/', registerAction),
     url(r'^basic-profile/', profileFill),
     url(r'^contact/', contact),
     url(r'^msgadmin/', messageAdmin),

@@ -19,6 +19,8 @@ from django.core.signing import Signer
 from django import forms
 from postman.models import Message,PendingMessage
 from marketing.promot import send_welcome_email
+from django.contrib import messages
+from django.core import signing
 
 from account.ajax import ajax_login_required
 ERROR_AUTH_FAIL = "UserName/Password was wrong."
@@ -246,20 +248,51 @@ def recommendTrack(request):
 def blogPage(request):
     return redirect('http://blog.signl.com/')
 
-def loginPage(request):
-    next = request.GET.get('next')
-    token = request.GET.get('token')
-    c = {}
-    c.update(csrf(request))
-    if next !=None:
-        c.update({'next':next})
-    if token !=None:
-        c.update({'token':token})
 
-    return render(request,"login.html", c)
+def logoutAction(request):
+    logout(request)
+    return HttpResponseRedirect("/")
 
 
-def doLogin(request):
+def createAccountForUser(request,user,firstname,lastname,email,password=None,linkedinId=None,headline=None,pictureurl=None):
+    user.first_name = firstname
+    user.last_name = lastname
+    user.email = email
+    user.is_company = False
+    if linkedinId !=None:
+        user.headline = headline
+        user.icon = pictureurl
+        user.linkedinId = linkedinId
+        password = hashlib.sha224(linkedinId).hexdigest()
+    user.set_password(password)
+    try:
+        user.save()
+    except:
+        return False,ERROR_CREATE_ACCOUT
+    loginUser = auth.authenticate(username = email, password = password)
+    auth.login(request,loginUser)
+    return True,""
+
+
+def linkCorpAccount(request,target_email,firstname,lastname,email,password=None,linkedinId=None,headline=None,pictureurl=None):
+    try:
+        user = User.objects.get(email=target_email)
+    except:
+        return False,"Target Email is invalid."
+    else:
+        if user.is_company == False:
+            return False,'Token expired.'
+        if target_email == email :
+            return createAccountForUser(request,user,firstname,lastname,email,password,linkedinId,headline,pictureurl)
+        try:
+            User.objects.get(email=email) # check email already exited
+        except:
+            return createAccountForUser(request,user,firstname,lastname,email,password,linkedinId,headline,pictureurl)
+        else:
+            return False,'Email address already exists.'
+
+
+def loginAction(request):
     if request.POST:
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -301,7 +334,6 @@ def doLogin(request):
 
         # Check if user login with linkedin, and connect account if needed
         loginUser = authenticate(email = email, password = password)
-
         if loginUser is not None and loginUser.is_active:
             if token != None and token !="":
                 signer = Signer(salt='blastoffCorp')
@@ -321,95 +353,37 @@ def doLogin(request):
 
             auth.login(request, loginUser)          
             if linkedinId is not None:
-                if next != None:
+                if next != None and next != "":
                     return HttpResponse(json.dumps({'success':'True','next':next}))
                 else:
                     return HttpResponse(json.dumps({'success':'True'}))
 
-            if next != None:
+            if next != None and next != "":
                 return HttpResponseRedirect(next)
             else:
                 return HttpResponseRedirect("/")
-
         elif loginUser is not None and not loginUser.is_active:
             Error= ERROR_INACTIVE 
             return render(request, 'login.html', locals())
         else:
             Error= ERROR_AUTH_FAIL
             return render(request, 'login.html', locals())
+        return HttpResponseRedirect("/")
 
-    return HttpResponseRedirect("/")
-
-
-def doLogout(request):
-    logout(request)
-    return HttpResponseRedirect("/")
-
-
-def register(request):
-    next = request.GET.get('next')
-    token = request.GET.get('token')
-    comp = request.GET.get('comp')
-    print comp 
-    c = {}
-    if comp != None and comp != "":
-        try:
-            company = Company.objects.get(slug=comp)
-        except:
-            print "can not find company"
-        else:
-            c.update({'company':company})
-
-    c.update(csrf(request))
-    if next !=None:
-        c.update({'next':next})
-    if token !=None:
-        c.update({'token':token})
-
-    return render(request,"register.html", c)
-
-
-def createAccountForUser(request,user,firstname,lastname,email,password=None,linkedinId=None,headline=None,pictureurl=None):
-    user.first_name = firstname
-    user.last_name = lastname
-    user.email = email
-    user.is_company = False
-    if linkedinId !=None:
-        user.headline = headline
-        user.icon = pictureurl
-        user.linkedinId = linkedinId
-        password = hashlib.sha224(linkedinId).hexdigest()
-    user.set_password(password)
-    try:
-        user.save()
-    except:
-        return False,ERROR_CREATE_ACCOUT
-    loginUser = auth.authenticate(username = email, password = password)
-    auth.login(request,loginUser)
-    return True,""
-
-
-def linkCorpAccount(request,target_email,firstname,lastname,email,password=None,linkedinId=None,headline=None,pictureurl=None):
-    try:
-        user = User.objects.get(email=target_email)
-    except:
-        return False,"Target Email is invalid."
     else:
-        if user.is_company == False:
-            return False,'Token expired.'
-        if target_email == email :
-            return createAccountForUser(request,user,firstname,lastname,email,password,linkedinId,headline,pictureurl)
-        try:
-            User.objects.get(email=email) # check email already exited
-        except:
-            return createAccountForUser(request,user,firstname,lastname,email,password,linkedinId,headline,pictureurl)
-        else:
-            return False,'Email address already exists.'
+        next = request.GET.get('next')
+        token = request.GET.get('token')
+        c = {}
+        c.update(csrf(request))
+        if next !=None:
+            c.update({'next':next})
+        if token !=None:
+            c.update({'token':token})
+
+        return render(request,"login.html", c)
 
 
-from django.contrib import messages
-from django.core import signing
-def doRegister(request):
+def registerAction(request):
     if request.POST:
         linkedinId = request.POST.get('linkedinId')        
         firstname = request.POST.get('firstname')
@@ -484,6 +458,27 @@ def doRegister(request):
             login(request,loginUser)
 
             return HttpResponseRedirect("/accounts/basic-profile/")
+    else:
+        next = request.GET.get('next')
+        token = request.GET.get('token')
+        comp = request.GET.get('comp')
+        print comp 
+        c = {}
+        if comp != None and comp != "":
+            try:
+                company = Company.objects.get(slug=comp)
+            except:
+                print "can not find company"
+            else:
+                c.update({'company':company})
+
+        c.update(csrf(request))
+        if next !=None:
+            c.update({'next':next})
+        if token !=None:
+            c.update({'token':token})
+
+        return render(request,"register.html", c)
 
 
 def pickIndustryPage(request):

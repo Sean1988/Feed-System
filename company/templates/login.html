@@ -37,7 +37,7 @@
 
 {% block content %}  
     <div class="container">
-      <form action="/accounts/doLogin/" method="post" class="form-signin">{% csrf_token %}
+      <form action="/accounts/login/" method="post" class="form-signin">{% csrf_token %}
       
       <div class="alert {% if not Error %}hide{% endif %}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -86,7 +86,7 @@
         IN.API.Profile("me").fields("id,firstName,lastName,headline,emailAddress,pictureUrl")
           .result( function(me) {
              mixpanel.track("linkedin login");
-             $.post("/accounts/doLogin/", 
+             $.post("/accounts/login/", 
              { 
               'linkedinId' : me.values[0].id,
               'firstname' : me.values[0].firstName,
