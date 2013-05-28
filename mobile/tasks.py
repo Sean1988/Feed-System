@@ -8,6 +8,29 @@ from mobile.fetcher import *
 from scheduler.views import releaseAllAccounts
 from django.db.models import Q
 # this task is to get the app rating and rating count for app.    
+import requests
+# popid is chart id 
+def getTop300FromApple():
+    #url = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/categoryList?cc=us&genreId=36&mode=TopCharts&popId=27"
+    #url = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/topChartFragmentData?popId=27"
+    url = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop?cc=us&genreId=6017&popId=27&dataOnly=True"
+    headers = { #'Referer': "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop?cc=us&genreId=6015&popId=27",
+                'X-Apple-Connection-Type': 'WiFi',
+                'User-Agent' : 'iTunes-iPhone/6.1.2 (6; 16GB; dt:82)',
+                'X-Apple-Store-Front': '143441-1,16',
+                'X-Apple-Client-Versions':    'iBooks/3.1; GameCenter/2.0',
+                'X-Apple-Client-Application': 'Software',
+                'X-Apple-Partner': 'origin.0',
+                'X-Dsid' : '1039594798'
+              }
+    
+    r = requests.get(url,headers=headers)
+    
+    #print r.content
+    data = json.loads(r.content)
+    print len(data['charts'][0]['content'])
+    return data
+
 def updateAppRating():
     c = Ec2()
     c.launchSpotInstance(7,'two_workers')

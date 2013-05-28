@@ -15,6 +15,7 @@ from collections import deque
 from itertools import tee, islice, izip
 from company.models import * 
 from web.models import * 
+from django.db.models import Q
 #from openpyxl.cell import get_column_letter
 #from openpyxl.reader.excel import load_workbook
 import simplejson as json
@@ -179,18 +180,7 @@ def extractAmount(data, currency=""):
 
     return amount * multiplier
 
-import redis
-def cacheTagCompany():
-    server = redis.Redis(host='localhost', port=6379, db=5)
-    allTag = Tag.objects.filter(isBlastoff=True)
-    for tag in allTag:
-        print tag.id
-        num = Company.objects.filter(tags=tag).count()
-        print num 
-        server.hset('tagnum',tag.slug,num)
 
-
-from django.db.models import Q
 def markCompanyDefaultTag():
     allComp = Company.objects.filter(~Q(tags=None))
     server = redis.Redis(host='localhost', port=6379, db=5)
@@ -210,23 +200,10 @@ def markCompanyDefaultTag():
                 item.save()
                 print "get default tag %s for company %s" %(blastoff_tag[0].tagName,item.name)
             else:
-                for bltag in blastoff_tag:
-                    num = int(server.hget('tagnum',bltag.slug))
-                    if num == 0:
-                        blastoff_tag.remove(bltag)
-                    else:
-                        bltag.num = num
-                blastoff_tag.sort(key=lambda x: x.num, reverse=True)
+                blastoff_tag.sort(key=lambda x: x.companyNum)
                 item.defaultTag = blastoff_tag[0]
                 item.save()
                 print "get default tag %s for company %s" %(blastoff_tag[0].tagName,item.name)
-
-
-
-
-
-            
-
 
 
 # getting highest and lowest momemtum and convert all companies
